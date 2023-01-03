@@ -1,0 +1,74 @@
+enum ProjectStatus {
+  NOT_OPEN
+  PENDING
+  CLOSED
+}
+
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+}
+
+type Task @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  code: String
+  processStep: Int
+  description: String
+  summary: String
+  projectID: ID @index(name: "byProject")
+  taskIndex: Int
+  assigner: ID
+  assignee: ID
+  type: Int
+}
+
+type Project @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  key: String
+  description: String
+  Users: [User] @manyToMany(relationName: "ProjectUser")
+  Tasks: [Task] @hasMany(indexName: "byProject", fields: ["id"])
+  Owner: User @hasOne
+  status: ProjectStatus
+}
+
+type Message @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  content: String
+  image: String
+  audio: String
+  status: MessageStatus
+  replyToMessageID: ID
+  forUserId: ID
+  userID: ID! @index(name: "byUser")
+  chatroomID: ID! @index(name: "byChatRoom")
+}
+
+type ChatRoom @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  newMessages: Int
+  name: String
+  imageUri: String
+  Members: [User] @manyToMany(relationName: "ChatRoomUser")
+  Owner: User @hasOne
+  LastMessage: Message @hasOne
+  Messages: [Message] @hasMany(indexName: "byChatRoom", fields: ["id"])
+}
+
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  imageUri: String
+  status: String
+  email: String
+  lastOnlineAt: AWSTimestamp
+  phone: String
+  friends: [String]
+  Messages: [Message] @hasMany(indexName: "byUser", fields: ["id"])
+  ChatRooms: [ChatRoom] @manyToMany(relationName: "ChatRoomUser")
+  Projects: [Project] @manyToMany(relationName: "ProjectUser")
+}
+ 

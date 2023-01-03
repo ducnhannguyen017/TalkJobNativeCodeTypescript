@@ -1,0 +1,22 @@
+{
+  "name": "RNVideoChat",
+  "displayName": "RNVideoChat",
+  "senderID": "147299227261",
+  "connectyCubeConfig": [
+    {
+      "appId": 6718,
+      "authKey": "-HBpAMehnhgVUHG",
+      "authSecret": "hzLNdaqChZLe9ZY"
+    },
+    { 
+      "chat": {
+        "streamManagement": {
+          "enable": true
+        }
+      },
+      "debug": {
+        "mode": 1
+      }
+    }
+  ]
+}

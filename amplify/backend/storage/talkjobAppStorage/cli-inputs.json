@@ -1,0 +1,14 @@
+{
+  "resourceName": "talkjobAppStorage",
+  "policyUUID": "ad9048cd",
+  "bucketName": "talkjob-app-bucket",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}
