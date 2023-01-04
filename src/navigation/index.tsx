@@ -22,9 +22,12 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import DrawerContent from "../components/DrawerContent";
 import Colors from "../constants/Colors";
-import MainTabNavigator from "./MainTabNavigator";
-import ChatRoomHeader from "./ChatRoomHeader";
+import AddMember from "../screens/AddMember";
 import ChatRoomScreen from "../screens/ChatRoomScreen";
+import CreateNewTask from "../screens/CreateNewTask";
+import DetailProjectScreen from "../screens/DetailProjectScreen";
+import ChatRoomHeader from "./ChatRoomHeader";
+import MainTabNavigator from "./MainTabNavigator";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator<any>();
@@ -130,7 +133,7 @@ function RootNavigator() {
           headerBackTitleVisible: false,
         })}
       />
-      {/* <Stack.Screen
+      <Stack.Screen
         name="DetailProject"
         component={DetailProjectScreen}
         options={({ route }:any) => ({
@@ -154,7 +157,7 @@ function RootNavigator() {
           headerBackTitleVisible: false,
         })}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="Login"
         component={LoginScreen}
         options={({ route }:any) => ({

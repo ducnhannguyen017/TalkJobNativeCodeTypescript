@@ -11,7 +11,7 @@ import { User } from "../../models";
 import { Auth, Storage } from "aws-amplify";
 import { S3Image } from "aws-amplify-react-native";
 import { useWindowDimensions } from "react-native";
-import { Ionicons } from "react-native-vector-icons/Ionicons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AudioPlayer from "../AudioPlayer";
 import { Message as MessageModel } from "../../models";
 import MessageReply from "../MessageReply";
@@ -19,7 +19,7 @@ import MessageReply from "../MessageReply";
 const blue = "#3777f0";
 const grey = "lightgrey";
 
-const Message = (props) => {
+function Message(props) {
   const { setAsMessageReply, message: propMessage } = props;
 
   const [message, setMessage] = useState<MessageModel>(propMessage);
@@ -123,9 +123,9 @@ const Message = (props) => {
         )}
 
         {isMe && !!message.status && message.status !== "SENT" && (
-          <Ionicons
+          <MaterialCommunityIcons
             name={
-              message.status === "DELIVERED" ? "checkmark" : "checkmark-done"
+              message.status === "DELIVERED" ? "check" : "check-all"
             }
             size={16}
             color="gray"

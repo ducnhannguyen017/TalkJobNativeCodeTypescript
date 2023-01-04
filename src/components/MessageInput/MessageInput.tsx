@@ -246,7 +246,7 @@ const MessageInput = ({ chatRoom, messageReplyTo, removeMessageReplyTo }) => {
         >
           <View style={{ flex: 1 }}>
             <Text>Reply to:</Text>
-            <MessageComponent message={messageReplyTo} />
+            {MessageComponent && <MessageComponent message={messageReplyTo} />}
           </View>
           <Pressable onPress={() => removeMessageReplyTo()}>
             <AntDesign

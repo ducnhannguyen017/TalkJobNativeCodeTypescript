@@ -1,5 +1,5 @@
 import { DataStore } from "@aws-amplify/datastore";
-import { Ionicons } from "@expo/vector-icons";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import { Auth, Storage } from "aws-amplify";
 import { S3Image } from "aws-amplify-react-native";
 import React, { useEffect, useState } from "react";

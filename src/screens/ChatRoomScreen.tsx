@@ -67,6 +67,7 @@ export default function ChatRoomScreen() {
       }
     );
     setMessages(fetchedMessages);
+    console.log("fetchedMessages", fetchedMessages)
   };
 
   if (!chatRoom) {

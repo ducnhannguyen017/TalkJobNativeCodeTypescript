@@ -1,7 +1,6 @@
-import { Feather } from "@expo/vector-icons";
 // import { Audio, AVPlaybackStatus } from "expo-av";
-import React, { useEffect, useState } from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 
 const AudioPlayer = ({ soundURI }) => {
   // const [sound, setSound] = useState<Audio.Sound | null>(null);
