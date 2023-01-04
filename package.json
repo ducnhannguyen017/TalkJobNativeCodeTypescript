@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@azure/core-asynciterator-polyfill": "^1.0.2",
+    "@freakycoder/react-native-text-area": "^0.1.5",
     "@react-native-async-storage/async-storage": "^1.17.11",
     "@react-native-community/netinfo": "^9.3.7",
     "@react-native-picker/picker": "^2.4.8",
@@ -32,6 +33,8 @@
     "react-native-can-draw-overlays": "^1.0.0",
     "react-native-connectycube": "3.21.0",
     "react-native-device-info": "^9.0.2",
+    "react-native-dropdown-picker": "^5.4.4",
+    "react-native-emoji-selector": "^0.2.0",
     "react-native-gesture-handler": "^2.8.0",
     "react-native-incall-manager": "^4.0.0",
     "react-native-invoke-app": "github:ConnectyCube/react-native-invoke-app#master",
@@ -58,12 +61,12 @@
     "@typescript-eslint/eslint-plugin": "^5.37.0",
     "@typescript-eslint/parser": "^5.37.0",
     "babel-jest": "^26.6.3",
+    "deprecated-react-native-prop-types": "^4.0.0",
     "eslint": "^7.32.0",
     "jest": "^26.6.3",
     "metro-react-native-babel-preset": "0.72.3",
     "react-test-renderer": "18.1.0",
-    "typescript": "^4.8.3",
-    "deprecated-react-native-prop-types": "^4.0.0"
+    "typescript": "^4.8.3"
   },
   "jest": {
     "preset": "react-native",

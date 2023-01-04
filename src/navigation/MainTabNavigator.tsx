@@ -1,10 +1,18 @@
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Octicons from 'react-native-vector-icons/Octicons';
 import * as React from 'react';
 
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Colors from '../constants/Colors';
 import DashBoardScreen from '../screens/DashBoardScreen';
+import ChatsScreen from '../screens/chats-screen';
+import FriendsScreen from '../screens/FriendsScreen';
+import ProjectsScreen from '../screens/ProjectsScreen';
+import IssuesScreen from '../screens/IssuesScreen';
 
 const BottomTab = createBottomTabNavigator<any>();
 
@@ -37,7 +45,7 @@ function MainTabNavigator() {
           }
         })}
       />
-      {/* <BottomTab.Screen
+      <BottomTab.Screen
         name="Chats"
         component={ChatsScreen}
         options={({ navigation }: any) => ({
@@ -52,7 +60,7 @@ function MainTabNavigator() {
         name="Friends"
         component={FriendsScreen}
         options={({navigation}:any)=>({
-          tabBarIcon: ({ color }) => <FontAwesome5 name="user-friends" size={24} color={color} />,
+          tabBarIcon: ({ color }) => <FontAwesome name="users" size={24} color={color} />,
           headerShown: false,
           tabBarOptions: {
             showIcon: false,
@@ -63,7 +71,7 @@ function MainTabNavigator() {
         name="Projects"
         component={ProjectsScreen}
         options={({navigation}:any)=>({
-          tabBarIcon: ({ color }) => <FontAwesome5 name="project-diagram" size={24} color={color} />,
+          tabBarIcon: ({ color }) => <Octicons name="project" size={24} color={color} />,
           headerShown: false,
           tabBarOptions: {
             showIcon: false,
@@ -80,7 +88,7 @@ function MainTabNavigator() {
             showIcon: false,
           }
         })}
-      /> */}
+      />
     </BottomTab.Navigator>
   );
 }
