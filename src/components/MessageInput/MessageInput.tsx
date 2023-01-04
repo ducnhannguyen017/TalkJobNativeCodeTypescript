@@ -18,9 +18,9 @@ import { DataStore } from "@aws-amplify/datastore";
 import { ChatRoom, Message } from "../../models";
 import { Auth, Storage } from "aws-amplify";
 import EmojiSelector from "react-native-emoji-selector";
-import * as ImagePicker from "expo-image-picker";
+// import * as ImagePicker from "expo-image-picker";
 import { v4 as uuidv4 } from "uuid";
-import { Audio, AVPlaybackStatus } from "expo-av";
+// import { Audio, AVPlaybackStatus } from "expo-av";
 import { stat } from "fs";
 import AudioPlayer from "../AudioPlayer";
 import MessageComponent from "../Message";
@@ -30,7 +30,7 @@ const MessageInput = ({ chatRoom, messageReplyTo, removeMessageReplyTo }) => {
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
   const [image, setImage] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
-  const [recording, setRecording] = useState<Audio.Recording | null>(null);
+  // const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [soundURI, setSoundURI] = useState<string | null>(null);
 
   // useEffect(() => {
@@ -102,29 +102,29 @@ const MessageInput = ({ chatRoom, messageReplyTo, removeMessageReplyTo }) => {
   };
 
   // Image picker
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      // allowsEditing: true,
-      // aspect: [4, 3],
-      quality: 0.5,
-    });
+  // const pickImage = async () => {
+  //   const result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //     // allowsEditing: true,
+  //     // aspect: [4, 3],
+  //     quality: 0.5,
+  //   });
 
-    if (!result.cancelled) {
-      setImage(result.uri);
-    }
-  };
+  //   if (!result.cancelled) {
+  //     setImage(result.uri);
+  //   }
+  // };
 
-  const takePhoto = async () => {
-    const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      aspect: [4, 3],
-    });
+  // const takePhoto = async () => {
+  //   const result = await ImagePicker.launchCameraAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //     aspect: [4, 3],
+  //   });
 
-    if (!result.cancelled) {
-      setImage(result.uri);
-    }
-  };
+  //   if (!result.cancelled) {
+  //     setImage(result.uri);
+  //   }
+  // };
 
   const progressCallback = (progress) => {
     setProgress(progress.loaded / progress.total);
@@ -161,43 +161,43 @@ const MessageInput = ({ chatRoom, messageReplyTo, removeMessageReplyTo }) => {
     return blob;
   };
 
-  async function startRecording() {
-    try {
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        playsInSilentModeIOS: true,
-      });
+  // async function startRecording() {
+  //   try {
+  //     await Audio.setAudioModeAsync({
+  //       allowsRecordingIOS: true,
+  //       playsInSilentModeIOS: true,
+  //     });
 
-      console.log("Starting recording..");
-      const { recording } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY
-      );
-      setRecording(recording);
-      console.log("Recording started");
-    } catch (err) {
-      console.error("Failed to start recording", err);
-    }
-  }
+  //     console.log("Starting recording..");
+  //     const { recording } = await Audio.Recording.createAsync(
+  //       Audio.RecordingOptionsPresets.HIGH_QUALITY
+  //     );
+  //     setRecording(recording);
+  //     console.log("Recording started");
+  //   } catch (err) {
+  //     console.error("Failed to start recording", err);
+  //   }
+  // }
 
-  async function stopRecording() {
-    console.log("Stopping recording..");
-    if (!recording) {
-      return;
-    }
+  // async function stopRecording() {
+  //   console.log("Stopping recording..");
+  //   if (!recording) {
+  //     return;
+  //   }
 
-    setRecording(null);
-    await recording.stopAndUnloadAsync();
-    await Audio.setAudioModeAsync({
-      allowsRecordingIOS: false,
-    });
+  //   setRecording(null);
+  //   await recording.stopAndUnloadAsync();
+  //   await Audio.setAudioModeAsync({
+  //     allowsRecordingIOS: false,
+  //   });
 
-    const uri = recording.getURI();
-    console.log("Recording stopped and stored at", uri);
-    if (!uri) {
-      return;
-    }
-    setSoundURI(uri);
-  }
+  //   const uri = recording.getURI();
+  //   console.log("Recording stopped and stored at", uri);
+  //   if (!uri) {
+  //     return;
+  //   }
+  //   setSoundURI(uri);
+  // }
 
   const sendAudio = async () => {
     if (!soundURI) {
@@ -318,7 +318,7 @@ const MessageInput = ({ chatRoom, messageReplyTo, removeMessageReplyTo }) => {
             placeholder="Signal message..."
           />
 
-          <Pressable onPress={pickImage}>
+          {/* <Pressable onPress={pickImage}>
             <Feather
               name="image"
               size={24}
@@ -334,16 +334,16 @@ const MessageInput = ({ chatRoom, messageReplyTo, removeMessageReplyTo }) => {
               color="#595959"
               style={styles.icon}
             />
-          </Pressable>
+          </Pressable> */}
 
-          <Pressable onPressIn={startRecording} onPressOut={stopRecording}>
+          {/* <Pressable onPressIn={startRecording} onPressOut={stopRecording}>
             <MaterialCommunityIcons
               name={recording ? "microphone" : "microphone-outline"}
               size={24}
               color={recording ? "red" : "#595959"}
               style={styles.icon}
             />
-          </Pressable>
+          </Pressable> */}
         </View>
 
         <Pressable onPress={onPress} style={styles.buttonContainer}>

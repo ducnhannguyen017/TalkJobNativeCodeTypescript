@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Image, Text, useWindowDimensions, Pressable } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Auth, DataStore } from "aws-amplify";
-import { ChatRoom, ChatRoomUser, User } from "../src/models";
+import { ChatRoom, ChatRoomUser, User } from "../models";
 import moment from "moment";
 import { useNavigation } from "@react-navigation/native";
 

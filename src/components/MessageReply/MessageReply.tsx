@@ -1,19 +1,13 @@
-import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  Pressable,
-} from "react-native";
 import { DataStore } from "@aws-amplify/datastore";
-import { User } from "../../src/models";
+import { Ionicons } from "@expo/vector-icons";
 import { Auth, Storage } from "aws-amplify";
 import { S3Image } from "aws-amplify-react-native";
-import { useWindowDimensions } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator, StyleSheet, Text, useWindowDimensions, View
+} from "react-native";
+import { Message as MessageModel, User } from "../../models";
 import AudioPlayer from "../AudioPlayer";
-import { Message as MessageModel } from "../../src/models";
 
 const blue = "#3777f0";
 const grey = "lightgrey";
