@@ -9,15 +9,13 @@ import {
   Platform,
   Image,
 } from "react-native";
-import {
-  SimpleLineIcons,
-  Feather,
-  MaterialCommunityIcons,
-  AntDesign,
-  Ionicons,
-} from "@expo/vector-icons";
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
+import Feather from 'react-native-vector-icons/Feather'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { DataStore } from "@aws-amplify/datastore";
-import { ChatRoom, Message } from "../../src/models";
+import { ChatRoom, Message } from "../../models";
 import { Auth, Storage } from "aws-amplify";
 import EmojiSelector from "react-native-emoji-selector";
 import * as ImagePicker from "expo-image-picker";

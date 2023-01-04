@@ -23,6 +23,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import DrawerContent from "../components/DrawerContent";
 import Colors from "../constants/Colors";
 import MainTabNavigator from "./MainTabNavigator";
+import ChatRoomHeader from "./ChatRoomHeader";
+import ChatRoomScreen from "../screens/ChatRoomScreen";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator<any>();
@@ -120,7 +122,7 @@ function RootNavigator() {
           headerShown: false
         })}
       />
-      {/* <Stack.Screen
+      <Stack.Screen
         name="ChatRoom"
         component={ChatRoomScreen}
         options={({ route }:any) => ({
@@ -128,7 +130,7 @@ function RootNavigator() {
           headerBackTitleVisible: false,
         })}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="DetailProject"
         component={DetailProjectScreen}
         options={({ route }:any) => ({

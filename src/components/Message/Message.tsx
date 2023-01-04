@@ -7,13 +7,13 @@ import {
   Pressable,
 } from "react-native";
 import { DataStore } from "@aws-amplify/datastore";
-import { User } from "../../src/models";
+import { User } from "../../models";
 import { Auth, Storage } from "aws-amplify";
 import { S3Image } from "aws-amplify-react-native";
 import { useWindowDimensions } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "react-native-vector-icons/Ionicons";
 import AudioPlayer from "../AudioPlayer";
-import { Message as MessageModel } from "../../src/models";
+import { Message as MessageModel } from "../../models";
 import MessageReply from "../MessageReply";
 
 const blue = "#3777f0";

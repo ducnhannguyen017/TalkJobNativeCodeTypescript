@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/core";
 import { DataStore } from "@aws-amplify/datastore";
-import { ChatRoom, Message as MessageModel } from "../src/models";
+import { ChatRoom, Message as MessageModel } from "../models";
 import Message from "../components/Message";
 import MessageInput from "../components/MessageInput";
 import { SortDirection } from "aws-amplify";
