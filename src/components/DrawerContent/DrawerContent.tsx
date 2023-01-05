@@ -2,7 +2,7 @@ import {
     DrawerContentScrollView,
     DrawerItem
 } from '@react-navigation/drawer';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
     ActivityIndicator,
@@ -10,7 +10,7 @@ import {
 } from 'react-native-paper';
 
 import { useNavigation } from '@react-navigation/native';
-import { Auth } from 'aws-amplify';
+import { Auth, DataStore, Hub } from 'aws-amplify';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { setCurrentUser } from '../../actions/currentUser';
@@ -22,6 +22,18 @@ const DrawerContent = (props) => {
     const paperTheme = useTheme();
     const navigation = useNavigation<any>();
     const [isLoading, setIsLoading] = useState(false)
+
+    useEffect(() => {
+        Hub.listen("auth", async (event) => {
+          if (event.payload.event == 'signOut') {
+            await DataStore.clear();
+            navigation?.navigate('Login');
+          } 
+          if (event.payload.event == 'signIn') {
+            navigation?.navigate('Drawer');
+          }
+        })
+      }, [])
 
     const toggleTheme = () => {
 

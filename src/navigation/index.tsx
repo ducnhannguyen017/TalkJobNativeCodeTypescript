@@ -33,6 +33,8 @@ import MainTabNavigator from "./MainTabNavigator";
 import LoginScreen from "../screens/LoginScreen";
 import authService from "../services/auth-service";
 import DetailTask from "../screens/DetailTask";
+import RegisterScreen from "../screens/RegisterScreen";
+import ConfirmEmail from "../screens/ConfirmEmail";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator<any>();
@@ -152,6 +154,20 @@ function RootNavigator() {
       <Stack.Screen
         name="Login"
         component={LoginScreen}
+        options={({ route }: any) => ({
+          headerShown: false
+        })}
+      />
+      <Stack.Screen
+        name="Register"
+        component={RegisterScreen}
+        options={({ route }: any) => ({
+          headerShown: false
+        })}
+      />
+      <Stack.Screen
+        name="ConfirmEmail"
+        component={ConfirmEmail}
         options={({ route }: any) => ({
           headerShown: false
         })}

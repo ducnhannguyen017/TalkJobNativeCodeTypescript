@@ -1,36 +1,21 @@
-import AntDesign from 'react-native-vector-icons/AntDesign'
-import Entypo from 'react-native-vector-icons/Entypo'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import { useNavigation } from '@react-navigation/native';
 import { Auth, DataStore, Hub } from 'aws-amplify';
 import React, { useEffect, useState } from 'react';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import {
-  SafeAreaView,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Alert,
+  Alert, SafeAreaView, Text, TouchableOpacity, View
 } from 'react-native';
-
-// import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-// import Ionicons from 'react-native-vector-icons/Ionicons';
-
-// import LoginSVG from '../assets/images/misc/login.svg';
-// import GoogleSVG from '../assets/images/misc/google.svg';
-// import FacebookSVG from '../assets/images/misc/facebook.svg';
-// import TwitterSVG from '../assets/images/misc/twitter.svg';
-
+import { setCurrentUser } from '../actions/currentUser';
 import CustomButton from '../components/CustomButton';
 import InputField from '../components/InputField';
+import { User } from '../models';
 import authService from '../services/auth-service';
-import store from '../store';
-import { setCurrentUser } from '../actions/currentUser';
 import callService from '../services/call-service';
 import pushNotificationsService from '../services/pushnotifications-service';
-import { User } from '../models';
+import store from '../store';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState(null);
