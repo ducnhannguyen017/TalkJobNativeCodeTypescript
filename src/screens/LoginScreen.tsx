@@ -3,7 +3,7 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { useNavigation } from '@react-navigation/native';
-import { Auth, DataStore } from 'aws-amplify';
+import { Auth, DataStore, Hub } from 'aws-amplify';
 import React, { useEffect, useState } from 'react';
 
 import {
@@ -38,39 +38,45 @@ const LoginScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false)
   // const navigation = useNavigation<any>();
 
-  // useEffect(() => {
-  //   const fetch = async () => {
-  //     const userData = await Auth.currentAuthenticatedUser();
-  //     if (userData.attributes.sub) {
-  //       navigation.push('Drawer');
-  //     } else {
-  //       navigation.push('Login');
-  //     }
-  //   }
-  //   fetch();
-  // }, [])
+  useEffect(() => {
+    setEmail(null);
+    setPassword(null);
+  }, [])
+  
 
-
+  useEffect(() => {
+    Hub.listen("auth", async (event) => {
+      if (event.payload.event == 'signOut') {
+        await DataStore.clear();
+        navigation?.navigate('Login');
+      } 
+      if (event.payload.event == 'signIn') {
+        navigation?.navigate('Drawer');
+      }
+    })
+  }, [])
+  
   const login = async() => {
     setIsLoading(true);
+    // await DataStore.clear();
+    // await DataStore.start();
     try{
-      await Auth.signIn(email, password).then(async(res)=>{
-        // const userData = await Auth.currentAuthenticatedUser();
-        await DataStore.clear();
-        await DataStore.start();
-        const authUser  = (await DataStore.query(User, res.attributes.sub))
-        console.log("authUser", authUser)
+      const userData = await Auth.signIn(email, password)
+      // const userData = await Auth.currentAuthenticatedUser();
+      console.log("userData", userData)
+      const authUser  = (await DataStore.query(User, userData.attributes.sub))
+      console.log("authUser", authUser)
+      if(authUser){
         await authService.login(authUser)
         store.dispatch(setCurrentUser(authUser))
         callService.init();
         pushNotificationsService.init();
-
-        navigation?.navigate('Drawer');
-      });
+      }
+      setIsLoading(false)
     }catch(e){
-      Alert.alert('Oops', e.message)
+      setIsLoading(false)
+      Alert.alert('Oops!', e.message)
     }
-    setIsLoading(false)
   }
 
   return (

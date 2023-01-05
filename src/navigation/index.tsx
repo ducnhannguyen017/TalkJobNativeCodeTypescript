@@ -32,6 +32,7 @@ import MainTabNavigator from "./MainTabNavigator";
 // import LoginScreen from "../screens/login-screen";
 import LoginScreen from "../screens/LoginScreen";
 import authService from "../services/auth-service";
+import DetailTask from "../screens/DetailTask";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator<any>();
@@ -189,6 +190,14 @@ function RootNavigator() {
       <Stack.Screen
         name="CreateNewTask"
         component={CreateNewTask}
+        options={({ route }: any) => ({
+          headerTitle: "Create New Task",
+          headerBackTitleVisible: false,
+        })}
+      />
+      <Stack.Screen
+        name="DetailTask"
+        component={DetailTask}
         options={({ route }: any) => ({
           headerTitle: "Create New Task",
           headerBackTitleVisible: false,

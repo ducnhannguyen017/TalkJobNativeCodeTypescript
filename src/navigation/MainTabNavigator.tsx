@@ -20,7 +20,7 @@ function MainTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="Chats"
+      // initialRouteName="Chats"
       screenOptions={{
         tabBarActiveTintColor: Colors.light.tint,
         headerStyle: {
