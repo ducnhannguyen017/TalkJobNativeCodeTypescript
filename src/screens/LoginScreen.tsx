@@ -32,8 +32,8 @@ const LoginScreen = ({ navigation }) => {
   useEffect(() => {
     Hub.listen("auth", async (event) => {
       if (event.payload.event == 'signOut') {
-        await DataStore.clear();
         navigation?.navigate('Login');
+        await DataStore.clear();
       } 
       if (event.payload.event == 'signIn') {
         navigation?.navigate('Drawer');
@@ -46,17 +46,7 @@ const LoginScreen = ({ navigation }) => {
     // await DataStore.clear();
     // await DataStore.start();
     try{
-      const userData = await Auth.signIn(email, password)
-      // const userData = await Auth.currentAuthenticatedUser();
-      console.log("userData", userData)
-      const authUser  = (await DataStore.query(User, userData.attributes.sub))
-      console.log("authUser", authUser)
-      if(authUser){
-        await authService.login(authUser)
-        store.dispatch(setCurrentUser(authUser))
-        callService.init();
-        pushNotificationsService.init();
-      }
+      await Auth.signIn(email, password)
       setIsLoading(false)
     }catch(e){
       setIsLoading(false)

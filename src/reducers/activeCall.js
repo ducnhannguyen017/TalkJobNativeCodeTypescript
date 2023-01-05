@@ -22,6 +22,7 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case SET_CALL_SESSION:
       const { session, isIcoming, isDummySession } = action;
+      console.log("nhan[action]", action)
       return {
         ...state,
         session,

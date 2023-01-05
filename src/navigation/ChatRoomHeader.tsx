@@ -1,16 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { View, Image, Text, useWindowDimensions, Pressable } from "react-native";
+import { View, Image, Text, useWindowDimensions, Pressable, Alert } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import { Auth, DataStore } from "aws-amplify";
 import { ChatRoom, ChatRoomUser, User } from "../models";
 import moment from "moment";
 import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import ConnectyCube from 'react-native-connectycube';
+import callService from "../services/call-service";
+import pushNotificationsService from "../services/pushnotifications-service";
+import { isCurrentRoute } from "../utils";
+import permissionsService from "../services/permissions-service";
+
 
 const ChatRoomHeader = ({ id, children }:any) => {
   const { width } = useWindowDimensions();
   const [user, setUser] = useState<User | null>(null);
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [chatRoom, setChatRoom] = useState<ChatRoom | undefined>(undefined);
+  const currentUser = useSelector((store:any) => store.currentUser);
+  const callSession = useSelector((store:any) => store.activeCall.session);
+  const isIcoming = useSelector((store:any) => store.activeCall.isIcoming);
+  const isEarlyAccepted = useSelector((store:any) => store.activeCall.isEarlyAccepted);
 
   const navigation = useNavigation<any>();
 
@@ -30,6 +41,23 @@ const ChatRoomHeader = ({ id, children }:any) => {
   const fetchChatRoom = async () => {
     DataStore.query(ChatRoom, id).then(setChatRoom);
   };
+
+  useEffect(() => {
+    if (isIcoming && !isEarlyAccepted) {
+      const isAlreadyOnIncomingCallScreen = isCurrentRoute(navigation, 'IncomingCallScreen');
+      const isAlreadyOnVideoScreenScreen = isCurrentRoute(navigation, 'VideoScreen');
+      if (!isAlreadyOnIncomingCallScreen && !isAlreadyOnVideoScreenScreen) {
+        // incoming call
+        navigation.push('IncomingCallScreen', { });
+      }
+    }
+  }, [callSession, isIcoming, isEarlyAccepted]);
+
+  useEffect(() => {
+    if (isEarlyAccepted) {
+      navigation.push('VideoScreen', { });
+    }
+  }, [isEarlyAccepted]);
 
   useEffect(() => {
     if (!id) {
@@ -64,8 +92,37 @@ const ChatRoomHeader = ({ id, children }:any) => {
     navigation.navigate("GroupInfoScreen", { id });
   };
 
-  const handleVideoCall = () =>{
-    
+  const startCall = async (callType) => {
+    try {
+      
+      const selectedOpponentsIds = [user.connectyCubeUserId];
+  
+      ConnectyCube.videochat.CallType.AUDIO
+  
+      // 1. initiate a call
+      //
+      const callSession = await callService.startCall(selectedOpponentsIds, callType)
+  
+      // 2. send push notitification to opponents
+      //
+      const pushParams = {
+        message: `Incoming call from ${currentUser.displayName}`,
+        ios_voip: 1,
+        handle: currentUser.displayName,
+        initiatorId: callSession.initiatorID,
+        opponentsIds: selectedOpponentsIds.join(","),
+        uuid: callSession.ID,
+        callType: callType === ConnectyCube.videochat.CallType.VIDEO ? "video" : "audio"
+      };
+      pushNotificationsService.sendPushNotification(selectedOpponentsIds, pushParams);
+    } catch (error) {
+      Alert.alert('Oops!', error.message)
+    }
+    navigation.push('VideoScreen', { });
+  }
+
+  const handleVideoCall = async() =>{
+    await startCall(ConnectyCube.videochat.CallType.AUDIO)
   }
 
   const isGroup = allUsers.length > 2;

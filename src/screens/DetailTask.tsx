@@ -19,7 +19,6 @@ const DetailTask = () => {
   const [assignee, setAssignee] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [processStep, setProcessStep] = useState(null);
-  console.log(route.params.taskId);
   let defaultProcessStep;
 
   useEffect(() => {
@@ -36,12 +35,10 @@ const DetailTask = () => {
     const fetch = async () => {
       if (task?.assigner) {
         const assigner = await DataStore.query(User, task.assigner);
-        console.log('assigner', assigner);
         setAssigner(assigner);
       }
       if (task?.assignee) {
         const assignee = await DataStore.query(User, task.assignee);
-        console.log('assignee', assignee);
         setAssignee(assignee);
       }
     };

@@ -25,7 +25,7 @@ export default function InitiateCallScreen ({ route, navigation }) {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: currentUser.full_name,
+      title: currentUser.displayName,
       headerRight: () =>  <LogoutButton onPress={logout} />,
     });
   }, [navigation]);
@@ -89,9 +89,9 @@ export default function InitiateCallScreen ({ route, navigation }) {
     // 2. send push notitification to opponents
     //
     const pushParams = {
-      message: `Incoming call from ${currentUser.full_name}`,
+      message: `Incoming call from ${currentUser.displayName}`,
       ios_voip: 1,
-      handle: currentUser.full_name,
+      handle: currentUser.displayName,
       initiatorId: callSession.initiatorID,
       opponentsIds: selectedOpponentsIds.join(","),
       uuid: callSession.ID,
@@ -121,7 +121,7 @@ export default function InitiateCallScreen ({ route, navigation }) {
               key={id}
               style={styles.userLabel(user.color)}
               onPress={() => onPress(opponent)}>
-              <Text style={styles.userName}>{user.full_name}</Text>
+              <Text style={styles.userName}>{user.displayName}</Text>
               <MaterialIcon name={type} size={20} color="white" />
             </TouchableOpacity>
           );

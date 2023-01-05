@@ -15,6 +15,7 @@ import {
   acceptCall, 
   earlyAcceptCall, 
   muteMicrophone } from '../actions/activeCall'
+import { Alert } from 'react-native';
 
 const LOCAL_STREAM_USER_ID = 'localStream';
 
@@ -100,6 +101,8 @@ class CallService {
 
   async startCall(usersIds, callType, options = {}) {
     const session = ConnectyCube.videochat.createNewSession(usersIds, callType, options);
+    console.log("session", session)
+    console.log("this.callSession", this.callSession)
     store.dispatch(setCallSession(session));
 
     await this.setMediaDevices();
@@ -138,38 +141,41 @@ class CallService {
   }
 
   async acceptCall(options = {}, skipCallKit = false) {  
-    if (!this.callSession || this.isDummySession) {
-      store.dispatch(earlyAcceptCall());
-      console.log("[acceptCall] earlyAcceptCall");
-      return;
+    try {
+      if (!this.callSession || this.isDummySession) {
+        store.dispatch(earlyAcceptCall());
+        console.log("[acceptCall] earlyAcceptCall");
+        return;
+      }
+  
+      console.log("[acceptCall]");
+  
+      await this.setMediaDevices();
+      
+      // create local stream
+      const mediaOptions = {...CallService.MEDIA_OPTIONS};
+      if (this.callSession.callType === ConnectyCube.videochat.CallType.AUDIO) {
+        mediaOptions.video = false;
+      }
+      const stream = await this.callSession.getUserMedia(mediaOptions)
+      // store streams
+      const streams = [{userId: LOCAL_STREAM_USER_ID, stream: stream}]
+      const opponentsIds = [this.callSession.initiatorID, 
+                            ...this.callSession.opponentsIDs.filter(oid => oid !== this.callSession.currentUserID)]
+      for (uId of opponentsIds) {
+        streams.push({userId: uId, stream: null});
+      }
+      store.dispatch(addOrUpdateStreams(streams));
+  
+      this.callSession.accept(options);
+    } catch (error) {
+      Alert.alert(error.message)
     }
 
-    console.log("[acceptCall]");
-
-    await this.setMediaDevices();
-
-    // create local stream
-    const mediaOptions = {...CallService.MEDIA_OPTIONS};
-    if (this.callSession.callType === ConnectyCube.videochat.CallType.AUDIO) {
-      mediaOptions.video = false;
-    }
-    const stream = await this.callSession.getUserMedia(mediaOptions)
-   
-    // store streams
-    const streams = [{userId: LOCAL_STREAM_USER_ID, stream: stream}]
-    const opponentsIds = [this.callSession.initiatorID, 
-                          ...this.callSession.opponentsIDs.filter(oid => oid !== this.callSession.currentUserID)]
-    for (uId of opponentsIds) {
-      streams.push({userId: uId, stream: null});
-    }
-    store.dispatch(addOrUpdateStreams(streams));
-
-    this.callSession.accept(options);
-
-    if (!skipCallKit) {
-      // report to Call Kit (iOS only)
-      this.reportAcceptCall(this.callSession.ID);
-    }
+    // if (!skipCallKit) {
+    //   // report to Call Kit (iOS only)
+    //   this.reportAcceptCall(this.callSession.ID);
+    // }
 
     this.stopSounds();
 
@@ -385,13 +391,13 @@ class CallService {
       this.stopSounds();
     }
     
-    showToast(`${getUserById(userId, 'full_name')} has accepted the call`);
+    showToast(`${getUserById(userId, 'displayName')} has accepted the call`);
   };
 
   async _onRejectCallListener(session, userId, extension){
     store.dispatch(removeStream({userId}))
 
-    const userName = getUserById(userId, 'full_name');
+    const userName = getUserById(userId, 'displayName');
     const message = extension.already_on_call
       ? `${userName} is busy (already on a call)`
       : `${userName} rejected the call request`;
@@ -402,7 +408,7 @@ class CallService {
   async _onStopCallListener (session, userId, extension){
     this.stopSounds();
 
-    const userName = getUserById(userId, 'full_name');
+    const userName = getUserById(userId, 'displayName');
     const message = `${userName} has left the call`;
 
     showToast(message);
@@ -418,7 +424,7 @@ class CallService {
   };
 
   async _onUserNotAnswerListener(session, userId){
-    showToast(`${getUserById(userId, 'full_name')} did not answer`);
+    showToast(`${getUserById(userId, 'displayName')} did not answer`);
 
     store.dispatch(removeStream({userId}));
   };

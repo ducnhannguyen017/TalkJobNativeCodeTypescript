@@ -18,7 +18,7 @@ import {
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from "@react-navigation/stack";
-import { Auth, Hub } from "aws-amplify";
+import { Auth, DataStore, Hub } from "aws-amplify";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import DrawerContent from "../components/DrawerContent";
@@ -35,6 +35,15 @@ import authService from "../services/auth-service";
 import DetailTask from "../screens/DetailTask";
 import RegisterScreen from "../screens/RegisterScreen";
 import ConfirmEmail from "../screens/ConfirmEmail";
+import IncomingCallScreen from "../screens/incoming-call-screen";
+import InitiateCallScreen from "../screens/initiate-call-screen";
+import VideoScreen from "../screens/video-screen";
+import { User } from "../models";
+import store from "../store";
+import callService from "../services/call-service";
+import pushNotificationsService from "../services/pushnotifications-service";
+import { setCurrentUser } from "../actions/currentUser";
+import permissionsService from "../services/permissions-service";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator<any>();
@@ -62,27 +71,27 @@ export default function Navigation({
 }: {
   colorScheme?: ColorSchemeName;
 }) {
-  const [currentUser, setCurrentUser] = React.useState(null);
+  // const [currentUser, setCurrentUser] = React.useState(null);
 
-  React.useEffect(() => {
-    Hub.listen("auth", (event) => {
-      console.log(event)
-      if (event.payload.event == 'signIn') {
-        setCurrentUser(event.payload.data)
-      } else {
-        setCurrentUser(null)
-      }
+  // React.useEffect(() => {
+  //   Hub.listen("auth", (event) => {
+  //     console.log(event)
+  //     if (event.payload.event == 'signIn') {
+  //       setCurrentUser(event.payload.data)
+  //     } else {
+  //       setCurrentUser(null)
+  //     }
 
-      if (event.payload.event == 'signIn_failure') {
-        Alert.alert("Opss", "Incorrect account or password")
-      }
-      if (event.payload.event == 'signUp_failure') {
-        Alert.alert("Opss", "An account with the given email already exists")
-      }
-      if (event.payload.event.split('_')[1] == "failure") {
-      }
-    })
-  })
+  //     if (event.payload.event == 'signIn_failure') {
+  //       Alert.alert("Opss", "Incorrect account or password")
+  //     }
+  //     if (event.payload.event == 'signUp_failure') {
+  //       Alert.alert("Opss", "An account with the given email already exists")
+  //     }
+  //     if (event.payload.event.split('_')[1] == "failure") {
+  //     }
+  //   })
+  // })
 
   return (
     <NavigationContainer
@@ -109,25 +118,34 @@ const AuthStack = () => {
 
 function RootNavigator() {
   // console.log(currentUser);
-  const [currentUser, setCurrentUser] = React.useState(undefined);
+  const [currUser, setCurrUser] = React.useState(undefined);
   const checkUser = async () => {
     try {
-      const authUser = await Auth.currentAuthenticatedUser({ bypassCache: true });
-      console.log("authUser", authUser)
-      if (authUser) {
-        setCurrentUser(authUser)
+      const userData = await Auth.currentAuthenticatedUser({ bypassCache: true });
+      const authUser  = (await DataStore.query(User, userData.attributes.sub))
+      if(authUser){
+        await authService.login(authUser)
+        store.dispatch(setCurrentUser(authUser))
+        callService.init();
+        pushNotificationsService.init();
+
+        setCurrUser(authUser)
       } else {
-        setCurrentUser(null)
+        setCurrUser(null)
       }
     } catch (error) {
-      setCurrentUser(null)
+      setCurrUser(null)
     }
   }
   React.useEffect(() => {
     checkUser();
   }, []);
 
-  if (currentUser === undefined) {
+  React.useEffect(() => {
+    permissionsService.checkAndRequestDrawOverlaysPermission();
+  }, [])
+
+  if (currUser === undefined) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator />
@@ -137,7 +155,7 @@ function RootNavigator() {
 
   return (
     <Stack.Navigator
-      initialRouteName={currentUser ? "Drawer" : "Login"}
+      initialRouteName={currUser ? "Drawer" : "Login"}
       screenOptions={{
         headerStyle: {
           backgroundColor: Colors.light.tint,
@@ -164,6 +182,33 @@ function RootNavigator() {
         options={({ route }: any) => ({
           headerShown: false
         })}
+      />
+      <Stack.Screen 
+        name="IncomingCallScreen" 
+        component={IncomingCallScreen} 
+        options={{
+          headerShown: false
+        }}
+      />
+      <Stack.Screen 
+        name="InitiateCallScreen" 
+        component={InitiateCallScreen} 
+        options={{
+          headerStyle: {
+            backgroundColor: 'grey',
+          },
+          headerTintColor: '#fff',
+          headerShown: true,
+          headerLeft: () => <></>,
+          gestureEnabled: false,
+        }}
+      />
+      <Stack.Screen 
+        name="VideoScreen" 
+        component={VideoScreen} 
+        options={{
+          headerShown: false
+        }}
       />
       <Stack.Screen
         name="ConfirmEmail"

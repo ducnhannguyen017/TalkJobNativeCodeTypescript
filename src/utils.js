@@ -1,9 +1,11 @@
-import { users } from './config-users';
+// import { users } from './config-users';
 import { Platform, ToastAndroid } from 'react-native';
 import Toast from 'react-native-simple-toast';
+import { useSelector } from 'react-redux';
 
 export function getUserById(userId, key) {
-  const user = users.find(user => user.id == userId);
+  // const user = users.find(user => user.id == userId);
+  const user = useSelector((store) => store.currentUser);
 
   if (typeof key === 'string') {
     return user[key];
@@ -15,7 +17,7 @@ export function getUserById(userId, key) {
 export function getCallRecipientString(usersIds) {
   let opponentsNamesString = ""
   for (let i = 0; i < usersIds.length; ++i) {
-    opponentsNamesString += getUserById(usersIds[i]).full_name
+    opponentsNamesString += getUserById(usersIds[i]).displayName
     if (i !== (usersIds.length - 1)) {
       opponentsNamesString += ", "
     }
