@@ -4,6 +4,7 @@ import { Auth, DataStore } from 'aws-amplify';
 import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { ChatRoom, ChatRoomUser } from '../../src/models';
 import ChatRoomItem from '../components/ChatRoomItem';
+import { User } from '../models';
 
 
 export default function ChatsScreen() {
@@ -15,6 +16,8 @@ export default function ChatsScreen() {
     let subscription;
     const fetch=async()=>{
       const userData = await Auth.currentAuthenticatedUser();
+      const currentUser = DataStore.query(User, userData.attributes.sub);
+      console.log("currentUser", currentUser)
       subscription = DataStore.observe(ChatRoom).subscribe((msg) => {
         if (msg.model === ChatRoom && msg.opType === "INSERT") {
           setChatRooms((chatRoom) => [msg.element, ...chatRoom]);

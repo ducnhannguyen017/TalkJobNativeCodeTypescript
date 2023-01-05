@@ -34,6 +34,7 @@ export default function FriendsScreen() {
       const fetchUsers = async () => {
         const userData = await Auth.currentAuthenticatedUser();
         const authUser  = (await DataStore.query(User, userData.attributes.sub))
+        console.log("authUser", authUser)
         let usersQuery=[];
         await Promise.all(
           authUser.friends.map(async(friend) => {

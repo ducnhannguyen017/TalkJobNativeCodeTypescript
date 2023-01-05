@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Image, Text, useWindowDimensions, Pressable } from "react-native";
-import Feather from "react-native-vector-icons/Feather";
+import Entypo from "react-native-vector-icons/Entypo";
 import { Auth, DataStore } from "aws-amplify";
 import { ChatRoom, ChatRoomUser, User } from "../models";
 import moment from "moment";
@@ -64,6 +64,10 @@ const ChatRoomHeader = ({ id, children }:any) => {
     navigation.navigate("GroupInfoScreen", { id });
   };
 
+  const handleVideoCall = () =>{
+    
+  }
+
   const isGroup = allUsers.length > 2;
 
   return (
@@ -93,14 +97,16 @@ const ChatRoomHeader = ({ id, children }:any) => {
         </Text>
       </Pressable>
 
-      <Feather
-        name="camera"
-        size={24}
-        color="black"
-        style={{ marginHorizontal: 10 }}
-      />
-      <Feather
-        name="edit-2"
+      <Pressable onPress={()=>handleVideoCall()}>
+        <Entypo
+          name="camera"
+          size={24}
+          color="black"
+          style={{ marginHorizontal: 10 }}
+        />
+      </Pressable>
+      <Entypo
+        name="phone"
         size={24}
         color="black"
         style={{ marginHorizontal: 10 }}

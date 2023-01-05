@@ -378,6 +378,20 @@ export const schema = {
                         ]
                     }
                 },
+                "connectyCubeUserId": {
+                    "name": "connectyCubeUserId",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "displayName": {
+                    "name": "displayName",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -919,6 +933,6 @@ export const schema = {
         }
     },
     "nonModels": {},
-    "codegenVersion": "3.3.4",
-    "version": "e79e2814786fe8d6f42f126417e5fc74"
+    "codegenVersion": "3.3.1",
+    "version": "a9d4ec8c1d9fac8ccbc4a4328da93094"
 };

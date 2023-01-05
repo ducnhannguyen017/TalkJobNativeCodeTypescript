@@ -120,6 +120,8 @@ type EagerUser = {
   readonly Messages?: (Message | null)[] | null;
   readonly ChatRooms?: (ChatRoomUser | null)[] | null;
   readonly Projects?: (ProjectUser | null)[] | null;
+  readonly connectyCubeUserId?: string | null;
+  readonly displayName?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -140,6 +142,8 @@ type LazyUser = {
   readonly Messages: AsyncCollection<Message>;
   readonly ChatRooms: AsyncCollection<ChatRoomUser>;
   readonly Projects: AsyncCollection<ProjectUser>;
+  readonly connectyCubeUserId?: string | null;
+  readonly displayName?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

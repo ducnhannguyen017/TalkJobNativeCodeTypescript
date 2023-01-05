@@ -31,9 +31,9 @@ const DrawerContent = (props) => {
     
     const signOut=async()=>{
         // navigation.navigate("LoginScreen")
-        await DataStore.clear();
-        await DataStore.start();
-        Auth.signOut();
+        // await DataStore.clear();
+        // await DataStore.start();
+        await Auth.signOut();
     }
 
     return(

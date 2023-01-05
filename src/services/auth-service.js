@@ -3,15 +3,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class AuthService {
   async login(user) {
-    await ConnectyCube.createSession(user)
+    await ConnectyCube.createSession({
+      login: user.name,
+      password: user.name
+    })
     await ConnectyCube.chat.connect({
-      userId: user.id,
-      password: user.password,
+      userId: user.connectyCubeUserId,
+      password: user.name,
     })
     await this._storeUser(user)
   }
 
-  async logout(){
+  async logout() {
     ConnectyCube.chat.disconnect();
     await ConnectyCube.destroySession();
 
@@ -39,7 +42,7 @@ class AuthService {
     try {
       const jsonValue = await AsyncStorage.getItem('@currentUser')
       return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch(e) {
+    } catch (e) {
       console.error("_getStoredUser error: ", e)
     }
   }

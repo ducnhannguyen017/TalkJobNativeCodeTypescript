@@ -3,11 +3,12 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
- import {
+import {
   DarkTheme, DefaultTheme, NavigationContainer
 } from "@react-navigation/native";
 import * as React from "react";
 import {
+  ActivityIndicator,
   Alert,
   ColorSchemeName, Pressable, View
 } from "react-native";
@@ -17,7 +18,7 @@ import {
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from "@react-navigation/stack";
-import { Hub } from "aws-amplify";
+import { Auth, Hub } from "aws-amplify";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import DrawerContent from "../components/DrawerContent";
@@ -28,6 +29,9 @@ import CreateNewTask from "../screens/CreateNewTask";
 import DetailProjectScreen from "../screens/DetailProjectScreen";
 import ChatRoomHeader from "./ChatRoomHeader";
 import MainTabNavigator from "./MainTabNavigator";
+// import LoginScreen from "../screens/login-screen";
+import LoginScreen from "../screens/LoginScreen";
+import authService from "../services/auth-service";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator<any>();
@@ -42,12 +46,12 @@ const defaultOptions = ({ navigation }) => ({
       marginRight: 10,
     }}>
       <MaterialIcons name="search" size={22} color={'white'} />
-      <Pressable onPress={()=> navigation.openDrawer()}>
+      <Pressable onPress={() => navigation.openDrawer()}>
         <MaterialCommunityIcons name="dots-vertical" size={22} color={'white'} />
       </Pressable>
     </View>
   ),
-  headerLeft:()=>(<></>)
+  headerLeft: () => (<></>)
 });
 
 export default function Navigation({
@@ -56,79 +60,112 @@ export default function Navigation({
   colorScheme?: ColorSchemeName;
 }) {
   const [currentUser, setCurrentUser] = React.useState(null);
+
   React.useEffect(() => {
-    Hub.listen("auth", (event)=>{
+    Hub.listen("auth", (event) => {
       console.log(event)
-      if(event.payload.event == 'signIn'){
+      if (event.payload.event == 'signIn') {
         setCurrentUser(event.payload.data)
-      }else{
+      } else {
         setCurrentUser(null)
       }
 
-      if(event.payload.event == 'signIn_failure'){
+      if (event.payload.event == 'signIn_failure') {
         Alert.alert("Opss", "Incorrect account or password")
       }
-      if(event.payload.event == 'signUp_failure'){
+      if (event.payload.event == 'signUp_failure') {
         Alert.alert("Opss", "An account with the given email already exists")
       }
-      if(event.payload.event.split('_')[1] == "failure"){
+      if (event.payload.event.split('_')[1] == "failure") {
       }
     })
   })
-  
-  
+
   return (
     <NavigationContainer
       // linking={LinkingConfiguration}
       theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
     >
       <RootNavigator />
-      {/* {currentUser?(
-      ):(
-        <AuthStack/>
+      {/* {currentUser ? (
+      ) : (
+        <AuthStack />
       )} */}
     </NavigationContainer>
   );
 }
 
-// const AuthStack = () => {
-//   return (
-//     <Stack.Navigator screenOptions={{headerShown: false}}>
-//       <Stack.Screen name="Login" component={LoginScreen} />
-//       <Stack.Screen name="Register" component={RegisterScreen} />
-//     </Stack.Navigator>
-//   );
-// };
+const AuthStack = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Login" component={LoginScreen} />
+      {/* <Stack.Screen name="Register" component={RegisterScreen} /> */}
+    </Stack.Navigator>
+  );
+};
 
 function RootNavigator() {
-  // const currentUser = Auth.currentUserInfo();
   // console.log(currentUser);
+  const [currentUser, setCurrentUser] = React.useState(undefined);
+  const checkUser = async () => {
+    try {
+      const authUser = await Auth.currentAuthenticatedUser({ bypassCache: true });
+      console.log("authUser", authUser)
+      if (authUser) {
+        setCurrentUser(authUser)
+      } else {
+        setCurrentUser(null)
+      }
+    } catch (error) {
+      setCurrentUser(null)
+    }
+  }
+  React.useEffect(() => {
+    checkUser();
+  }, []);
+
+  if (currentUser === undefined) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator />
+      </View>
+    )
+  }
+
   return (
     <Stack.Navigator
-    screenOptions={{
-      headerStyle: {
-        backgroundColor: Colors.light.tint,
-        shadowOpacity: 0,
-        elevation: 0,
-      },
-      headerTintColor: Colors.light.background,
-      headerTitleAlign: 'left',
-      headerTitleStyle: {
-        fontWeight: 'bold',
-      },
-    }}
+      initialRouteName={currentUser ? "Drawer" : "Login"}
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: Colors.light.tint,
+          shadowOpacity: 0,
+          elevation: 0,
+        },
+        headerTintColor: Colors.light.background,
+        headerTitleAlign: 'left',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}
     >
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={({ route }: any) => ({
+          headerShown: false
+        })}
+      />
       <Stack.Screen
         name="Drawer"
         component={DrawerNavigator}
-        options= {()=>({
+        options={() => ({
           headerShown: false
         })}
       />
       <Stack.Screen
         name="ChatRoom"
         component={ChatRoomScreen}
-        options={({ route }:any) => ({
+        options={({ route }: any) => ({
           headerTitle: () => <ChatRoomHeader id={route.params?.id} />,
           headerBackTitleVisible: false,
         })}
@@ -136,7 +173,7 @@ function RootNavigator() {
       <Stack.Screen
         name="DetailProject"
         component={DetailProjectScreen}
-        options={({ route }:any) => ({
+        options={({ route }: any) => ({
           headerTitle: "Detail Project",
           headerBackTitleVisible: false,
         })}
@@ -144,7 +181,7 @@ function RootNavigator() {
       <Stack.Screen
         name="AddMember"
         component={AddMember}
-        options={({ route }:any) => ({
+        options={({ route }: any) => ({
           headerTitle: "Add Project",
           headerBackTitleVisible: false,
         })}
@@ -152,40 +189,33 @@ function RootNavigator() {
       <Stack.Screen
         name="CreateNewTask"
         component={CreateNewTask}
-        options={({ route }:any) => ({
+        options={({ route }: any) => ({
           headerTitle: "Create New Task",
           headerBackTitleVisible: false,
         })}
       />
-      {/* <Stack.Screen
-        name="Login"
-        component={LoginScreen}
-        options={({ route }:any) => ({
-          headerShown: false
-        })}
-      /> */}
     </Stack.Navigator>
   );
 }
 
-function DrawerNavigator(){
-  return(
+function DrawerNavigator() {
+  return (
     <Drawer.Navigator
-        drawerContent={(props) => (<DrawerContent {...props} />)} 
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: Colors.light.tint,
-            shadowOpacity: 0,
-            elevation: 0,
-          },
-          headerTintColor: Colors.light.background,
-          headerTitleAlign: 'left',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          }
-        }}
-      >
-          <Drawer.Screen name="Main" component={MainTabNavigator} options={defaultOptions}/>
-      </Drawer.Navigator>
+      drawerContent={(props) => (<DrawerContent {...props} />)}
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: Colors.light.tint,
+          shadowOpacity: 0,
+          elevation: 0,
+        },
+        headerTintColor: Colors.light.background,
+        headerTitleAlign: 'left',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        }
+      }}
+    >
+      <Drawer.Screen name="Main" component={MainTabNavigator} options={defaultOptions} />
+    </Drawer.Navigator>
   )
 }

@@ -12,7 +12,7 @@ import store from '../store'
 import { setCurrentUser } from '../actions/currentUser'
 import PushNotificationsService from '../services/pushnotifications-service';
 
-export default function VideoIncomingCallScreen ({ route, navigation }) {
+export default function InitiateCallScreen ({ route, navigation }) {
 
   const opponents = route.params?.opponents
 

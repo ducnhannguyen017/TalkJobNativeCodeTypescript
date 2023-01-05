@@ -1,18 +1,19 @@
-import "react-native-gesture-handler";
+import Amplify, { Auth, DataStore, Hub } from "aws-amplify";
 import React, { useEffect, useState } from "react";
+import ConnectyCube from 'react-native-connectycube';
+import "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import Amplify, { DataStore, Hub, Auth } from "aws-amplify";
-import { withAuthenticator } from "aws-amplify-react-native";
-import config from "./src/aws-exports";
+import amplifyConfig from "./src/aws-exports";
+import config from './connectycube_config.json';
 import { Message, User } from "./src/models";
-
-// import useCachedResources from "./hooks/useCachedResources";
-// import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./src/navigation";
-import moment from "moment";
+import { Provider } from 'react-redux'
+import store from "./src/store";
+
+ConnectyCube.init(...config.connectyCubeConfig);
 
 Amplify.configure({
-  ...config,
+  ...amplifyConfig,
   Analytics: { 
     disabled: true
   }
@@ -109,12 +110,15 @@ function App() {
   //   return null;
   // } else {
     return (
-      <SafeAreaProvider>
-        <Navigation/>
-        {/* <StatusBar /> */}
-      </SafeAreaProvider>
+      <Provider store={store}>
+        <SafeAreaProvider>
+          <Navigation/>
+          {/* <StatusBar /> */}
+        </SafeAreaProvider>
+      </Provider>
     );
   // }
 }
 
-export default withAuthenticator(App);
+export default App;
+// export default withAuthenticator(App);

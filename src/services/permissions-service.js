@@ -40,5 +40,5 @@ class PermisisonsService {
   }
 }
 
-const permisisonsService = new PermisisonsService();
-export default permisisonsService;
+const permissionsService = new PermisisonsService();
+export default permissionsService;
