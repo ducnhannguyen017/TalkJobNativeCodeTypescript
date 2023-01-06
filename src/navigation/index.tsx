@@ -12,6 +12,8 @@ import {
   Alert,
   ColorSchemeName, Pressable, View
 } from "react-native";
+import { useNavigation } from "@react-navigation/core";
+
 
 // import LinkingConfiguration from "./LinkingConfiguration";
 
@@ -71,27 +73,7 @@ export default function Navigation({
 }: {
   colorScheme?: ColorSchemeName;
 }) {
-  // const [currentUser, setCurrentUser] = React.useState(null);
 
-  // React.useEffect(() => {
-  //   Hub.listen("auth", (event) => {
-  //     console.log(event)
-  //     if (event.payload.event == 'signIn') {
-  //       setCurrentUser(event.payload.data)
-  //     } else {
-  //       setCurrentUser(null)
-  //     }
-
-  //     if (event.payload.event == 'signIn_failure') {
-  //       Alert.alert("Opss", "Incorrect account or password")
-  //     }
-  //     if (event.payload.event == 'signUp_failure') {
-  //       Alert.alert("Opss", "An account with the given email already exists")
-  //     }
-  //     if (event.payload.event.split('_')[1] == "failure") {
-  //     }
-  //   })
-  // })
 
   return (
     <NavigationContainer
@@ -137,6 +119,20 @@ function RootNavigator() {
       setCurrUser(null)
     }
   }
+  const navigation = useNavigation<any>();
+
+  React.useEffect(() => {
+    Hub.listen("auth", async (event) => {
+      if (event.payload.event == 'signOut') {
+        await DataStore.clear();
+        console.log("event", event)
+        navigation?.navigate('Login');
+      } 
+      if (event.payload.event == 'signIn') {
+        navigation?.navigate('Drawer');
+      }
+    })
+  }, [])
   React.useEffect(() => {
     checkUser();
   }, []);

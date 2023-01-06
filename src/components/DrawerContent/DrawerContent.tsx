@@ -23,18 +23,6 @@ const DrawerContent = (props) => {
     const navigation = useNavigation<any>();
     const [isLoading, setIsLoading] = useState(false)
 
-    useEffect(() => {
-        Hub.listen("auth", async (event) => {
-          if (event.payload.event == 'signOut') {
-            await DataStore.clear();
-            navigation?.navigate('Login');
-          } 
-          if (event.payload.event == 'signIn') {
-            navigation?.navigate('Drawer');
-          }
-        })
-      }, [])
-
     const toggleTheme = () => {
 
     }
@@ -43,10 +31,10 @@ const DrawerContent = (props) => {
         // await DataStore.clear();
         // await DataStore.start();
         setIsLoading(true);
-        await Auth.signOut();
         await authService.logout();
         pushNotificationsService.deleteSubscription()
         store.dispatch(setCurrentUser(null))
+        await Auth.signOut();
         setIsLoading(false);
         // navigation.navigate("Login")
         // navigation.popToTop();

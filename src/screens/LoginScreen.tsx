@@ -28,19 +28,6 @@ const LoginScreen = ({ navigation }) => {
     setPassword(null);
   }, [])
   
-
-  useEffect(() => {
-    Hub.listen("auth", async (event) => {
-      if (event.payload.event == 'signOut') {
-        navigation?.navigate('Login');
-        await DataStore.clear();
-      } 
-      if (event.payload.event == 'signIn') {
-        navigation?.navigate('Drawer');
-      }
-    })
-  }, [])
-  
   const login = async() => {
     setIsLoading(true);
     // await DataStore.clear();

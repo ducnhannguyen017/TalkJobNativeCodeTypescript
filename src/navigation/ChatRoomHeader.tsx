@@ -122,7 +122,7 @@ const ChatRoomHeader = ({ id, children }:any) => {
   }
 
   const handleVideoCall = async() =>{
-    await startCall(ConnectyCube.videochat.CallType.AUDIO)
+    await startCall(ConnectyCube.videochat.CallType.VIDEO)
   }
 
   const isGroup = allUsers.length > 2;
