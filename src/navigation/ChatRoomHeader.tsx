@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { View, Image, Text, useWindowDimensions, Pressable, Alert } from "react-native";
-import Entypo from "react-native-vector-icons/Entypo";
-import { Auth, DataStore } from "aws-amplify";
-import { ChatRoom, ChatRoomUser, User } from "../models";
-import moment from "moment";
 import { useNavigation } from "@react-navigation/native";
-import { useSelector } from "react-redux";
+import { Auth, DataStore } from "aws-amplify";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import { Alert, Image, Pressable, Text, useWindowDimensions, View } from "react-native";
 import ConnectyCube from 'react-native-connectycube';
+import Entypo from "react-native-vector-icons/Entypo";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { useSelector } from "react-redux";
+import { ChatRoom, ChatRoomUser, User } from "../models";
 import callService from "../services/call-service";
 import pushNotificationsService from "../services/pushnotifications-service";
 import { isCurrentRoute } from "../utils";
-import permissionsService from "../services/permissions-service";
 
 
 const ChatRoomHeader = ({ id, children }:any) => {
@@ -19,9 +19,6 @@ const ChatRoomHeader = ({ id, children }:any) => {
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [chatRoom, setChatRoom] = useState<ChatRoom | undefined>(undefined);
   const currentUser = useSelector((store:any) => store.currentUser);
-  const callSession = useSelector((store:any) => store.activeCall.session);
-  const isIcoming = useSelector((store:any) => store.activeCall.isIcoming);
-  const isEarlyAccepted = useSelector((store:any) => store.activeCall.isEarlyAccepted);
 
   const navigation = useNavigation<any>();
 
@@ -41,23 +38,6 @@ const ChatRoomHeader = ({ id, children }:any) => {
   const fetchChatRoom = async () => {
     DataStore.query(ChatRoom, id).then(setChatRoom);
   };
-
-  useEffect(() => {
-    if (isIcoming && !isEarlyAccepted) {
-      const isAlreadyOnIncomingCallScreen = isCurrentRoute(navigation, 'IncomingCallScreen');
-      const isAlreadyOnVideoScreenScreen = isCurrentRoute(navigation, 'VideoScreen');
-      if (!isAlreadyOnIncomingCallScreen && !isAlreadyOnVideoScreenScreen) {
-        // incoming call
-        navigation.push('IncomingCallScreen', { });
-      }
-    }
-  }, [callSession, isIcoming, isEarlyAccepted]);
-
-  useEffect(() => {
-    if (isEarlyAccepted) {
-      navigation.push('VideoScreen', { });
-    }
-  }, [isEarlyAccepted]);
 
   useEffect(() => {
     if (!id) {
@@ -124,50 +104,61 @@ const ChatRoomHeader = ({ id, children }:any) => {
   const handleVideoCall = async() =>{
     await startCall(ConnectyCube.videochat.CallType.VIDEO)
   }
+  const handleAudioCall = async() =>{
+    await startCall(ConnectyCube.videochat.CallType.AUDIO)
+  }
 
   const isGroup = allUsers.length > 2;
 
   return (
     <View
       style={{
+        flex: 1,
         flexDirection: "row",
-        justifyContent: "space-between",
-        width: width - 100,
-        // marginLeft: 25,
-        // padding: 10,
+        // justifyContent: "space-between",
+        width: width - 130,
+        marginLeft: -25,
+        // // padding: 10,
         alignItems: "center",
+        // backgroundColor: 'red'
       }}
     >
-      <Image
-        source={{
-          uri: chatRoom?.imageUri || user?.imageUri,
-        }}
-        style={{ width: 30, height: 30, borderRadius: 30 }}
-      />
-
-      <Pressable onPress={openInfo} style={{ flex: 1, marginLeft: 10 }}>
-        <Text style={{ fontWeight: "bold" }}>
-          {chatRoom?.name || user?.name}
-        </Text>
-        <Text numberOfLines={1}>
-          {isGroup ? getUsernames() : getLastOnlineText()}
-        </Text>
-      </Pressable>
-
-      <Pressable onPress={()=>handleVideoCall()}>
-        <Entypo
-          name="camera"
-          size={24}
-          color="black"
-          style={{ marginHorizontal: 10 }}
+        
+      <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+        <Image
+          source={{
+            uri: chatRoom?.imageUri || user?.imageUri,
+          }}
+          style={{ width: 30, height: 30, borderRadius: 30 }}
         />
-      </Pressable>
-      <Entypo
-        name="phone"
-        size={24}
-        color="black"
-        style={{ marginHorizontal: 10 }}
-      />
+        <Pressable onPress={openInfo} style={{ flex: 1, marginLeft: 10 }}>
+          <Text style={{ fontWeight: "bold", color: '#fff' }}>
+            {chatRoom?.name || user?.name}
+          </Text>
+          <Text numberOfLines={1} style={{color: '#fff', fontSize: 12}}>
+            {isGroup ? getUsernames() : getLastOnlineText()}
+          </Text>
+        </Pressable>
+      </View>
+
+      <View style={{flexDirection: "row"}}>
+        <Pressable onPress={()=>handleVideoCall()}>
+          <MaterialIcons
+            name="video-call"
+            size={24}
+            color="black"
+            style={{ marginHorizontal: 10, color: "#fff" }}
+          />
+        </Pressable>
+        <Pressable onPress={()=>handleAudioCall()}>
+          <Entypo
+            name="phone"
+            size={22}
+            color="black"
+            style={{ marginHorizontal: 10, color: "#fff" }}
+          />
+        </Pressable>
+      </View>
     </View>
   );
 };

@@ -2,7 +2,7 @@ import {
     DrawerContentScrollView,
     DrawerItem
 } from '@react-navigation/drawer';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
     ActivityIndicator,
@@ -10,18 +10,24 @@ import {
 } from 'react-native-paper';
 
 import { useNavigation } from '@react-navigation/native';
-import { Auth, DataStore, Hub } from 'aws-amplify';
+import { Auth } from 'aws-amplify';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Octicons from 'react-native-vector-icons/Octicons';
 import { setCurrentUser } from '../../actions/currentUser';
 import authService from '../../services/auth-service';
 import pushNotificationsService from '../../services/pushnotifications-service';
 import store from '../../store';
+import { useSelector } from 'react-redux';
 
 const DrawerContent = (props) => {
     const paperTheme = useTheme();
     const navigation = useNavigation<any>();
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
+    const currentUser = useSelector((store:any) => store.currentUser);
 
     const toggleTheme = () => {
 
@@ -48,17 +54,17 @@ const DrawerContent = (props) => {
                         <View style={{ flexDirection: 'row', marginTop: 15 }}>
                             <Avatar.Image
                                 source={{
-                                    uri: 'https://api.adorable.io/avatars/50/abott@adorable.png'
+                                    uri: currentUser?.imageUri
                                 }}
                                 size={50}
                             />
                             <View style={{ marginLeft: 15, flexDirection: 'column' }}>
-                                <Title style={styles.title}>John Doe</Title>
-                                <Caption style={styles.caption}>@j_doe</Caption>
+                                <Title style={styles.title}>{currentUser?.name}</Title>
+                                <Caption style={styles.caption}>{currentUser?.email}</Caption>
                             </View>
                         </View>
 
-                        <View style={styles.row}>
+                        {/* <View style={styles.row}>
                             <View style={styles.section}>
                                 <Paragraph style={[styles.paragraph, styles.caption]}>80</Paragraph>
                                 <Caption style={styles.caption}>Following</Caption>
@@ -67,10 +73,10 @@ const DrawerContent = (props) => {
                                 <Paragraph style={[styles.paragraph, styles.caption]}>100</Paragraph>
                                 <Caption style={styles.caption}>Followers</Caption>
                             </View>
-                        </View>
+                        </View> */}
                     </View>
 
-                    <Drawer.Section style={styles.drawerSection}>
+                    <Drawer.Section style={styles.drawerSection}  title="Pages">
 
                         <DrawerItem
                             icon={({ color, size }) => (
@@ -82,50 +88,34 @@ const DrawerContent = (props) => {
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <MaterialCommunityIcons
-                                    name="home-outline"
-                                    color={color}
-                                    size={size}
-                                />
+                                <AntDesign name="wechat" size={24} color={color} />
                             )}
                             label="Chats"
                             onPress={() => { props.navigation.navigate('Chats') }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <MaterialCommunityIcons
-                                    name="account-outline"
-                                    color={color}
-                                    size={size}
-                                />
+                                <FontAwesome name="users" size={24} color={color} />
                             )}
                             label="Friends"
                             onPress={() => { props.navigation.navigate('Friends') }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <MaterialCommunityIcons
-                                    name="bookmark-outline"
-                                    color={color}
-                                    size={size}
-                                />
+                                <Octicons name="project" size={24} color={color} />
                             )}
                             label="Projects"
                             onPress={() => { props.navigation.navigate('Projects') }}
                         />
                         <DrawerItem
                             icon={({ color, size }) => (
-                                <MaterialCommunityIcons
-                                    name="bookmark-outline"
-                                    color={color}
-                                    size={size}
-                                />
+                                <Ionicons name="code-working" size={24} color={color} />
                             )}
                             label="Issues"
                             onPress={() => { props.navigation.navigate('Issues') }}
                         />
                     </Drawer.Section>
-                    <Drawer.Section title="Preferences">
+                    {/* <Drawer.Section title="Preferences">
                         <TouchableRipple onPress={() => { toggleTheme() }}>
                             <View style={styles.preference}>
                                 <Text>Dark Theme</Text>
@@ -134,7 +124,7 @@ const DrawerContent = (props) => {
                                 </View>
                             </View>
                         </TouchableRipple>
-                    </Drawer.Section>
+                    </Drawer.Section> */}
                 </View>
             </DrawerContentScrollView>
             <Drawer.Section style={styles.bottomDrawerSection}>

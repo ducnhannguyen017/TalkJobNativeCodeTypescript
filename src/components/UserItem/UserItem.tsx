@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, Image, View, Pressable } from 'react-native';
+import { Text, Image, View, Pressable, BackHandler } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import styles from './styles';
 import { Auth, DataStore } from 'aws-amplify';
@@ -56,24 +56,44 @@ export default function UserItem({ user, setSelectedUsers, selectedUser, newGrou
           user,
           chatRoom: newChatRoom
         }));
+
+        await DataStore.save(
+          User.copyOf(dbUser, (updated) => {
+            updated.friends = [...updated.friends, user.id];
+          })
+        );
+        await DataStore.save(
+          User.copyOf(user, (updated) => {
+            updated.friends = [...updated.friends, dbUser.id];
+          })
+        );
     
+        console.log("[71]")
         navigation.navigate('ChatRoom', { id: newChatRoom.id });
+        // navigation.reset({
+        //   index: 0,
+        //   routes: [
+        //     {
+        //       name: 'Chats',
+        //     },
+        //   ],
+        // });
       }
     }
-    const authUser = await Auth.currentAuthenticatedUser();
-    const lstChatRoomUser:any = groupBy((await DataStore.query(ChatRoomUser)).filter(chatRoom => chatRoom.user.id == authUser.attributes.sub || chatRoom.user.id == user.id));
-    await Promise.all(
-      Object.keys(lstChatRoomUser).map((chatRoomId) => findUsersInChatRoom(chatRoomId))
-    );
-    const createNewRoom = Object.values(roomMap).find((room:any)=>{
-      if(room.length == 2 ) return true;
-      else return false
-    });
-    if(createNewRoom){
+    // const authUser = await Auth.currentAuthenticatedUser();
+    // const lstChatRoomUser:any = groupBy((await DataStore.query(ChatRoomUser)).filter(chatRoom => chatRoom.user.id == authUser.attributes.sub || chatRoom.user.id == user.id));
+    // await Promise.all(
+    //   Object.keys(lstChatRoomUser).map((chatRoomId) => findUsersInChatRoom(chatRoomId))
+    // );
+    // const createNewRoom = Object.values(roomMap).find((room:any)=>{
+    //   if(room.length == 2 ) return true;
+    //   else return false
+    // });
+    // if(createNewRoom){
 
-    }else{
+    // }else{
 
-    }
+    // }
   }
 
   const findUsersInChatRoom= async (chatRoomId)=>{

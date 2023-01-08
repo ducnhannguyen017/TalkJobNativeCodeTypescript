@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, SafeAreaView, TouchableOpacity, View } from 'react-native';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSelector } from 'react-redux'
 
 export default function VideoToolBar({displaySwitchCam, onSwitchCamera, onStopCall, onMute, canSwitchCamera}) {
@@ -21,9 +23,10 @@ export default function VideoToolBar({displaySwitchCam, onSwitchCamera, onStopCa
   function _renderStopButton() {
     return (
       <TouchableOpacity
-        style={[styles.buttonContainer, styles.buttonCallEnd]}
+        style={[styles.iconButton, {backgroundColor: 'red'}]}
         onPress={onStopCall}>
-        <MaterialIcon name={'call-end'} size={32} color="white" />
+        {/* <MaterialIcons name={'call-end'} size={32} color="white" /> */}
+        <MaterialCommunityIcons name="phone-hangup" size={30} color={'white'} />
       </TouchableOpacity>
     );
   };
@@ -33,9 +36,14 @@ export default function VideoToolBar({displaySwitchCam, onSwitchCamera, onStopCa
 
     return (
       <TouchableOpacity
-        style={[styles.buttonContainer, styles.buttonMute]}
+        style={[styles.iconButton]}
         onPress={muteUnmuteAudio}>
-        <MaterialIcon name={type} size={32} color="white" />
+        {/* <MaterialIcons name={type} size={32} color="white" /> */}
+        <FontAwesome
+          name={isMicrophoneMuted ? 'microphone-slash' : 'microphone'}
+          size={30}
+          color={'white'}
+        />
       </TouchableOpacity>
     );
   };
@@ -45,21 +53,29 @@ export default function VideoToolBar({displaySwitchCam, onSwitchCamera, onStopCa
 
     return (
       <TouchableOpacity
-        style={[styles.buttonContainer, styles.buttonSwitch]}
+        style={styles.iconButton}
         onPress={switchCamera}>
-        <MaterialIcon name={type} size={32} color="white" />
+        <Ionicons name={"camera-reverse-outline"} size={32} color="white" />
+        {/* <MaterialIcons
+          name={isFrontCamera ? 'camera-off' : 'camera'}
+          size={30}
+          color={'white'}
+        /> */}
       </TouchableOpacity>
     );
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.buttonsContainer}>
       <View style={styles.toolBarItem}>
         {_renderMuteButton()}
       </View>
       <View style={styles.toolBarItem}>
         {_renderStopButton()}
       </View>
+      {/* <TouchableOpacity style={styles.iconButton}>
+        <Ionicons name="ios-camera-reverse" size={30} color={'white'} />
+      </TouchableOpacity> */}
       {displaySwitchCam && canSwitchCamera && 
         <View style={styles.toolBarItem}>
           {_renderSwitchVideoSourceButton()}
@@ -102,5 +118,21 @@ const styles = StyleSheet.create({
   },
   buttonSwitch: {
     backgroundColor: 'orange',
+  },
+
+  buttonsContainer: {
+    backgroundColor: '#333333',
+    padding: 20,
+    paddingBottom: 40,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 'auto',
+  },
+  iconButton: {
+    backgroundColor: '#4a4a4a',
+    padding: 15,
+    borderRadius: 50,
   },
 });

@@ -1,21 +1,19 @@
-import React, {useState} from 'react';
+import { useNavigation } from '@react-navigation/core';
+import { Auth, DataStore } from 'aws-amplify';
+import React, { useState } from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Alert
+  Alert, SafeAreaView,
+  ScrollView, Text, TouchableOpacity, View
 } from 'react-native';
-import InputField from '../components/InputField';
-import CustomButton from '../components/CustomButton';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {Auth, DataStore} from 'aws-amplify';
-import {User} from '../models';
-import { useNavigation } from "@react-navigation/core";
-import ConnectyCube from 'react-native-connectycube';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import CustomButton from '../components/CustomButton';
+import InputField from '../components/InputField';
+import { User } from '../models';
+import authService from '../services/auth-service';
 
 const RegisterScreen = () => {
   const [fullName, setFullName] = useState(null);
@@ -24,46 +22,70 @@ const RegisterScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState(null);
   const [phone, setPhone] = useState(null);
   const navigation = useNavigation<any>();
-
+  const [isLoading, setIsLoading] = useState(false);
 
   const onRegister = async () => {
+    console.log("[Register]")
+        //     await DataStore.clear();
+        // await DataStore.start();
+    
+    if(password !== confirmPassword){
+      Alert.alert("Oop!", "Password does not match");
+      return;
+    }
+    if(password.length < 8){
+      Alert.alert("Oop!", "Password is at least 8 characters long");
+      return;
+    }
+    setIsLoading(true);
     try {
       let name = email.split('@')[0];
-      await Auth.signUp({
-        username: email,
-        password: password,
-      });
-      await DataStore.save(
+      try {
+        const userSignup = await Auth.signUp({
+          username: email,
+          password: password,
+        });
+        console.log("userSignup", userSignup)
+      } catch (error) {
+        console.log(error.message)
+        return;
+      }
+      const user = await DataStore.save(
         new User({
-          name: name,
+          name: fullName,
           email: email,
           friends: [],
-          imageUri: 'https://talkjob-app-bucket164426-staging.s3.us-east-2.amazonaws.com/default-user-image.png',
+          imageUri:
+            'https://talkjob-app-bucket164426-staging.s3.us-east-2.amazonaws.com/default-user-image.png',
           status: `Hi, I'm ${fullName}`,
           phone: phone,
-          displayName: fullName
+          displayName: fullName,
         }),
       );
       const userProfile = {
         login: name,
-        password: name,
+        password: user.id,
         email: email,
         full_name: fullName,
         phone: phone,
       };
-      
-      await ConnectyCube.users
-        .signup(userProfile)
-        .then((user) => {
-          console.log("user", user)
+
+      console.log(userProfile)
+
+      authService
+        .signUp(userProfile)
+        .then(() => {
+          // Alert.alert('Account successfully registered');
         })
-        .catch((error) => {
-          console.log("error", error)
+        .catch(error => {
+          console.log(JSON.stringify(error))
+          Alert.alert(`Error.${JSON.stringify(error)}`);
         });
-      // navigation.navigate('ConfirmEmail')
+      navigation.navigate('ConfirmEmail', email)
     } catch (error) {
-      Alert.alert('Oops!', error.message)
-      
+      Alert.alert('Oops!', error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -71,8 +93,8 @@ const RegisterScreen = () => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{paddingHorizontal: 25}}>
-        <View style={{alignItems: 'center'}}>
-          <AntDesign name="google" size={24} color="black" />
+        <View style={{alignItems: 'center', marginTop: 20}}>
+          <FontAwesome name="registered" size={24} color="black" />
         </View>
 
         <Text
@@ -132,14 +154,24 @@ const RegisterScreen = () => {
 
         <InputField
           label={'Full Name'}
-          icon={<AntDesign name="twitter" size={24} color="black" />}
+          icon={<Ionicons
+            name="person-outline"
+            size={20}
+            color="#666"
+            style={{marginRight: 5}}
+          />}
           onChangeText={setFullName}
           value={fullName}
         />
 
         <InputField
           label={'Email'}
-          icon={<AntDesign name="twitter" size={24} color="black" />}
+          icon={<MaterialIcons
+            name="alternate-email"
+            size={20}
+            color="#666"
+            style={{marginRight: 5}}
+          />}
           keyboardType="email-address"
           onChangeText={setEmail}
           value={email}
@@ -147,15 +179,19 @@ const RegisterScreen = () => {
 
         <InputField
           label={'Phone'}
-          icon={<AntDesign name="twitter" size={24} color="black" />}
-          keyboardType="email-address"
+          icon={<AntDesign name="phone" size={24} color="black" />}
           onChangeText={setPhone}
           value={phone}
         />
 
         <InputField
           label={'Password'}
-          icon={<AntDesign name="twitter" size={24} color="black" />}
+          icon={<Ionicons
+            name="ios-lock-closed-outline"
+            size={20}
+            color="#666"
+            style={{marginRight: 5}}
+          />}
           inputType="password"
           onChangeText={setPassword}
           value={password}
@@ -163,46 +199,18 @@ const RegisterScreen = () => {
 
         <InputField
           label={'Confirm Password'}
-          icon={<AntDesign name="twitter" size={24} color="black" />}
+          icon={<Ionicons
+            name="ios-lock-closed-outline"
+            size={20}
+            color="#666"
+            style={{marginRight: 5}}
+          />}
           inputType="password"
           onChangeText={setConfirmPassword}
           value={confirmPassword}
         />
 
-        {/* <View
-          style={{
-            flexDirection: 'row',
-            borderBottomColor: '#ccc',
-            borderBottomWidth: 1,
-            paddingBottom: 8,
-            marginBottom: 30,
-          }}>
-          <AntDesign name="twitter" size={24} color="black" />
-          <TouchableOpacity onPress={() => setOpen(true)}>
-            <Text style={{color: '#666', marginLeft: 5, marginTop: 5}}>
-              {dobLabel}
-            </Text>
-          </TouchableOpacity>
-        </View> */}
-
-        {/* <DatePicker
-          modal
-          open={open}
-          date={date}
-          mode={'date'}
-          maximumDate={new Date('2005-01-01')}
-          minimumDate={new Date('1980-01-01')}
-          onConfirm={date => {
-            setOpen(false);
-            setDate(date);
-            setDobLabel(date.toDateString());
-          }}
-          onCancel={() => {
-            setOpen(false);
-          }}
-        /> */}
-
-        <CustomButton label={'Register'} onPress={() => onRegister()} />
+        <CustomButton label={'Register'} loading={isLoading} onPress={() => onRegister()} />
 
         <View
           style={{

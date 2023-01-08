@@ -1,4 +1,4 @@
-import { Auth, DataStore, Hub } from 'aws-amplify';
+import { Auth } from 'aws-amplify';
 import React, { useEffect, useState } from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -8,14 +8,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
   Alert, SafeAreaView, Text, TouchableOpacity, View
 } from 'react-native';
-import { setCurrentUser } from '../actions/currentUser';
 import CustomButton from '../components/CustomButton';
 import InputField from '../components/InputField';
-import { User } from '../models';
-import authService from '../services/auth-service';
-import callService from '../services/call-service';
-import pushNotificationsService from '../services/pushnotifications-service';
-import store from '../store';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState(null);

@@ -7,6 +7,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Transition } from "react-native-reanimated";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Entypo from "react-native-vector-icons/Entypo";
+import { MapLabelProcessStep } from "../constants/Common";
 import { Project, ProjectUser, Task } from "../models";
 
 const transition = (
@@ -229,18 +230,18 @@ const DetailProjectScreen = () => {
           <Text style={{ fontSize: 15, fontWeight: "bold" }}>Task</Text>
           <Pressable
             onPress={() =>
-              navigation.navigate("AddMember", {
+              navigation.navigate("Issues", {
                 projectId: route.params?.projectId,
               })
             }
             style={{ marginRight: 15 }}
           >
-            <Pressable onPress={()=>navigation.navigate("Issues")}>
+            {/* <Pressable onPress={()=>navigation.navigate("Issues")}> */}
               <AntDesign name="arrowright" size={24} color="black" />
-            </Pressable>
+            {/* </Pressable> */}
           </Pressable>
         </View>
-        {tasks.map((member, index) => {
+        {tasks.map((task, index) => {
           return (
             <View
               key={index}
@@ -259,8 +260,8 @@ const DetailProjectScreen = () => {
               ]}
             >
               <View>
-                <Text>Summary: {member.summary}</Text>
-                <Text>Status: {member.status}</Text>
+                <Text>Summary: {task.summary}</Text>
+                <Text>Status: {MapLabelProcessStep[`value${task.processStep}`]}</Text>
               </View>
             </View>
           );

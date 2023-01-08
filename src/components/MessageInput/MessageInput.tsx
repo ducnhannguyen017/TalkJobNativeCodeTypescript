@@ -9,7 +9,6 @@ import {
   Platform,
   Image,
 } from "react-native";
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import Feather from 'react-native-vector-icons/Feather'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -303,8 +302,8 @@ const MessageInput = ({ chatRoom, messageReplyTo, removeMessageReplyTo }) => {
               setIsEmojiPickerOpen((currentValue) => !currentValue)
             }
           >
-            <SimpleLineIcons
-              name="emotsmile"
+            <AntDesign
+              name="smileo"
               size={24}
               color="#595959"
               style={styles.icon}
@@ -315,7 +314,7 @@ const MessageInput = ({ chatRoom, messageReplyTo, removeMessageReplyTo }) => {
             style={styles.input}
             value={message}
             onChangeText={setMessage}
-            placeholder="Signal message..."
+            placeholder="Your message..."
           />
 
           {/* <Pressable onPress={pickImage}>
@@ -373,6 +372,8 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
+    justifyContent: "center",
+    alignItems: 'center'
   },
   inputContainer: {
     backgroundColor: "#f2f2f2",
@@ -386,7 +387,8 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   input: {
-    flex: 1,
+    // flex: 1,
+    height: 40,
     marginHorizontal: 5,
   },
   icon: {

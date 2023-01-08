@@ -15,6 +15,7 @@ import { Transition, Transitioning } from 'react-native-reanimated';
 import CustomButton from '../components/CustomButton';
 import DropDown from '../components/DropDown';
 import { Project, ProjectStatus, ProjectUser, Task, User } from '../models';
+import { Dropdown, MultiSelect } from 'react-native-element-dropdown'
 
 const transition = (
   <Transition.Together>
@@ -29,7 +30,7 @@ export default function ProjectsScreen() {
   const [currentIndex, setCurrentIndex] = React.useState(null);
   const [projectName, setProjectName] = useState(null);
   const [projectKey, setProjectKey] = useState(null);
-  const [members, setMembers] = useState(null);
+  const [members, setMembers] = useState([]);
   const [description, setDescription] = useState(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [projects, setProjects] = useState([]);
@@ -148,6 +149,7 @@ export default function ProjectsScreen() {
   }, []);
   
   const onSaveProject=async()=>{
+    // console.log("members", members)
     setLoading(true);
     const save = async()=>{
       const userData = await Auth.currentAuthenticatedUser();
@@ -179,6 +181,7 @@ export default function ProjectsScreen() {
       setProjectKey(null)
       setProjectName(null)
       setDescription(null);
+      setMembers([]);
     })
   }
 
@@ -269,15 +272,35 @@ export default function ProjectsScreen() {
               </View>
               <View>
                 <TextInput
-                  style={[styles.input,{marginLeft: 0, marginRight: 0}]}
+                  style={[styles.input,{marginLeft: 0, marginRight: 0, marginBottom: 0}]}
                   onChangeText={setProjectName}
                   value={projectName}
                   placeholder="Name"
                 />
               </View>
-              <View>
+              {/* <View>
                 <DropDown placeHolder="Members" value={members} setValue={setMembers} items={dropdownUsers} setItems={setDropdownUsers}/>
-              </View>
+              </View> */}
+              <View >
+                <MultiSelect
+                  style={styles.dropdown}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}
+                  inputSearchStyle={styles.inputSearchStyle}
+                  iconStyle={styles.iconStyle}
+                  data={dropdownUsers}
+                  search
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder="Members"
+                  searchPlaceholder="Search..."
+                  value={members}
+                  onChange={(item) => {
+                    setMembers(item);
+                  }}
+                />
+            </View>
               <View>
                 <RNTextArea
                   style={[styles.textarea]}
@@ -458,6 +481,32 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
     marginBottom: 12,
+    marginTop: 12,
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 10,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+    color: "gray"
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
+  },
+  dropdown: {
+    // margin: 16,
+    // height: 50,
+    borderBottomColor: "gray",
+    borderBottomWidth: 0.5,
+    height: 40,
     marginTop: 12,
     borderWidth: 1,
     padding: 10,

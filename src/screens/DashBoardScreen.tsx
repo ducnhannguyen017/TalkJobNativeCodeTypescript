@@ -22,6 +22,8 @@ import {Transition, Transitioning} from 'react-native-reanimated';
 import CustomButton from '../components/CustomButton';
 import DropDown from '../components/DropDown';
 import {Project, ProjectStatus, ProjectUser, Task, User} from '../models';
+import { isCurrentRoute } from '../utils';
+import { useSelector } from 'react-redux';
 
 const transition = (
   <Transition.Together>
@@ -44,6 +46,11 @@ export default function DashBoardScreen() {
   const ref = React.useRef<any>();
   const [inputSearchProject, setInputSearchProject] = useState(null);
   const navigation = useNavigation<any>();
+
+  const currentUser = useSelector((store:any) => store.currentUser);
+  const callSession = useSelector((store:any) => store.activeCall.session);
+  const isIcoming = useSelector((store:any) => store.activeCall.isIcoming);
+  const isEarlyAccepted = useSelector((store:any) => store.activeCall.isEarlyAccepted);
   // const { showActionSheetWithOptions } = useActionSheet();
 
   // LogBox.ignoreAllLogs();
@@ -87,6 +94,23 @@ export default function DashBoardScreen() {
     };
     fetch();
   }, []);
+  
+  useEffect(() => {
+    if (isIcoming && !isEarlyAccepted) {
+      const isAlreadyOnIncomingCallScreen = isCurrentRoute(navigation, 'IncomingCallScreen');
+      const isAlreadyOnVideoScreenScreen = isCurrentRoute(navigation, 'VideoScreen');
+      if (!isAlreadyOnIncomingCallScreen && !isAlreadyOnVideoScreenScreen) {
+        // incoming call
+        navigation.push('IncomingCallScreen', { });
+      }
+    }
+  }, [callSession, isIcoming, isEarlyAccepted]);
+
+  useEffect(() => {
+    if (isEarlyAccepted) {
+      navigation.push('VideoScreen', { });
+    }
+  }, [isEarlyAccepted]);
 
   const fetchMembersAndTask = async () => {
     const userData = await Auth.currentAuthenticatedUser();

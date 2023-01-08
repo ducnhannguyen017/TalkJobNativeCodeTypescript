@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { SafeAreaView, StatusBar } from 'react-native';
+import { Alert, SafeAreaView, StatusBar } from 'react-native';
 import { useSelector } from 'react-redux'
 import ConnectyCube from 'react-native-connectycube';
 
@@ -14,6 +14,7 @@ export default function VideoScreen ({ navigation }) {
   const streams = useSelector(store => store.activeCall.streams);
   const callSession = useSelector(store => store.activeCall.session);
   const isEarlyAccepted = useSelector(store => store.activeCall.isEarlyAccepted);
+  const user = useSelector((store) => store.currentUser);
 
   const isVideoCall = callSession?.callType === ConnectyCube.videochat.CallType.VIDEO;
 
@@ -23,18 +24,22 @@ export default function VideoScreen ({ navigation }) {
     if (streams.length <= 1) {
       stopCall()
     }
-  }, [streams]);
+  }, [streams , streams.length]);
 
   function navigateBack() {
     navigation.pop();
 
     showToast("Call is ended")
   }
-
+  
   function stopCall(){
-    CallService.stopCall();
-
-    navigateBack()
+    try {
+      CallService.stopCall();
+    } catch (error) {
+      Alert.alert(error.message)
+    }finally{
+      navigateBack()
+    }
   }
 
   function muteCall(isAudioMuted) {

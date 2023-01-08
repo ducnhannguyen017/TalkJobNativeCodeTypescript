@@ -12,6 +12,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import UserItem from "../components/UserItem";
 import Colors from "../constants/Colors";
 import { ChatRoom, ChatRoomUser, User } from "../models";
+import { useSelector } from "react-redux";
 
 export default function FriendsScreen() {
   const [users, setUsers] = useState<User[]>([]);
@@ -21,35 +22,61 @@ export default function FriendsScreen() {
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [groupName, setGroupName] = useState(null)
   const navigation = useNavigation<any>();
+  const currentUser = useSelector((store:any) => store.currentUser);
 
   useEffect(() => {
     setSelectedUsers([]);
     setGroupName("");
     setSelectMemberMode(false);
   },[])
+
   
   useEffect(() => {
-    // query users
-    try {
-      const fetchUsers = async () => {
-        const userData = await Auth.currentAuthenticatedUser();
-        const authUser  = (await DataStore.query(User, userData.attributes.sub))
+    const subscription = DataStore.observe(User, currentUser.id).subscribe(async (msg) => {
+      console.log("msg", msg)
+      if (msg.model === User && msg.opType === "UPDATE") {
         let usersQuery=[];
         await Promise.all(
-          authUser.friends.map(async(friend) => {
+          msg.element.friends.map(async(friend) => {
             const user:any = (await DataStore.query(User, friend));
             usersQuery.push(user)
           }));
           setUsers(usersQuery);
           setShowUsers(usersQuery);
-      };
+      }
+    });
+    
+    return () => subscription.unsubscribe();
+  }, [currentUser.friends.length]);
+  
+  useEffect(() => {
+    // query users
+    const fetchUsers = async () => {
+      const userData = await Auth.currentAuthenticatedUser();
+      const authUser  = (await DataStore.query(User, userData.attributes.sub))
+      let usersQuery=[];
+      await Promise.all(
+        authUser.friends.map(async(friend) => {
+          const user:any = (await DataStore.query(User, friend));
+          usersQuery.push(user)
+        }));
+        setUsers(usersQuery);
+        setShowUsers(usersQuery);
+    };
+    try {
       fetchUsers();
     } catch (error) {}
   }, []);
 
   const handleNewGroupMode = () => {
-    setSelectMemberMode(!selectMemberMode);
+    // setSelectMemberMode(!selectMemberMode);
+    navigation.navigate("CreateNewGroup", {users})
   };
+  
+  const handleNewContact =()=>{
+    navigation.navigate("AddContact", {users})
+
+  }
 
   const handleCancelNewGroup = () => {
     setSelectedUsers([]);
@@ -109,7 +136,7 @@ export default function FriendsScreen() {
     <>
       {/* {users.length > 0 && ( */}
         <View style={styles.page}>
-          {selectMemberMode && (
+          {/* {selectMemberMode && (
             <View
               style={{
                 flexDirection: "row",
@@ -143,10 +170,10 @@ export default function FriendsScreen() {
                 </View>
               </Pressable>
             </View>
-          )}
-          {!selectMemberMode && (
+          )} */}
+          {/* {!selectMemberMode && ( */}
             <Pressable
-              style={styles.container2}
+              style={[{...styles.container2, borderBottomWidth: 0}]}
               onPress={() => handleNewGroupMode()}
             >
               <View style={styles.image}>
@@ -162,17 +189,34 @@ export default function FriendsScreen() {
                 </View>
               </View>
             </Pressable>
-          )}
-          {selectMemberMode && (
+          {/* )} */}
+            <Pressable
+              style={styles.container2}
+              onPress={() => handleNewContact()}
+            >
+              <View style={styles.image}>
+                <AntDesign
+                  name="adduser"
+                  size={24}
+                  color={Colors.light.background}
+                />
+              </View>
+              <View style={styles.rightContainer}>
+                <View style={styles.row}>
+                  <Text style={styles.name}>New Contact</Text>
+                </View>
+              </View>
+            </Pressable>
+          {/* {selectMemberMode && (
             <TextInput
               style={styles.input}
               onChangeText={(text) => onInputSearchChange(text)}
               value={inputSearch}
               placeholder="Search"
             />
-          )}
+          )} */}
 
-          <View style={{ flexDirection: "row", marginLeft: 10 }}>
+          {/* <View style={{ flexDirection: "row", marginLeft: 10 }}>
             <FlatList
               horizontal
               data={selectedUsers}
@@ -189,7 +233,7 @@ export default function FriendsScreen() {
               )}
               showsVerticalScrollIndicator={true}
             ></FlatList>
-          </View>
+          </View> */}
           {/* <View style={styles.container2}>
             <View  style={styles.image}>
               <AntDesign name="addusergroup" size={24} color={Colors.light.background} />

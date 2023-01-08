@@ -3,15 +3,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class AuthService {
   async login(user) {
+    console.log("user", user)
     await ConnectyCube.createSession({
       login: user.name,
-      password: user.name
+      password: user.id
     })
     await ConnectyCube.chat.connect({
       userId: user.connectyCubeUserId,
-      password: user.name,
+      password: user.id,
     })
     await this._storeUser(user)
+  }
+
+  async signUp(params) {
+    await ConnectyCube.createSession()
+    await ConnectyCube.users.signup(params)
   }
 
   async logout() {

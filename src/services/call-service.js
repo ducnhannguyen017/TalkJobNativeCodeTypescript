@@ -101,8 +101,6 @@ class CallService {
 
   async startCall(usersIds, callType, options = {}) {
     const session = ConnectyCube.videochat.createNewSession(usersIds, callType, options);
-    console.log("session", session)
-    console.log("this.callSession", this.callSession)
     store.dispatch(setCallSession(session));
 
     await this.setMediaDevices();
@@ -172,10 +170,10 @@ class CallService {
       Alert.alert(error.message)
     }
 
-    // if (!skipCallKit) {
-    //   // report to Call Kit (iOS only)
-    //   this.reportAcceptCall(this.callSession.ID);
-    // }
+    if (!skipCallKit) {
+      // report to Call Kit (iOS only)
+      this.reportAcceptCall(this.callSession.ID);
+    }
 
     this.stopSounds();
 
@@ -406,12 +404,13 @@ class CallService {
   };
 
   async _onStopCallListener (session, userId, extension){
-    this.stopSounds();
+    console.log("_onStopCallListener", userId);
+    // this.stopSounds();
 
-    const userName = getUserById(userId, 'displayName');
-    const message = `${userName} has left the call`;
+    // const userName = getUserById(userId, 'displayName');
+    // const message = `${userName} has left the call`;
 
-    showToast(message);
+    // showToast(message);
 
     store.dispatch(removeStream({userId}));
     if (this.streams.length <= 1) {
