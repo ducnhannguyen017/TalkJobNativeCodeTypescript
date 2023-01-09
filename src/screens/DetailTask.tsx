@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, Image, Pressable} from 'react-native';
+import {View, Text, StyleSheet, Image, Pressable, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/core';
 import {DataStore} from 'aws-amplify';
@@ -51,12 +51,14 @@ const DetailTask = () => {
   };
 
   const handleSaveProcessStep = async () => {
+    console.log("__save")
     setIsLoading(true);
     const response = await DataStore.save(
       Task.copyOf(task, updated => {
         updated.processStep = processStep;
       }),
     );
+    Alert.alert("Save success")
     setIsLoading(false);
   };
 
@@ -234,7 +236,7 @@ const DetailTask = () => {
       </View>
       <CustomButton
         loading={isLoading}
-        label={'Login'}
+        label={'Save'}
         onPress={() => handleSaveProcessStep()}
       />
     </View>

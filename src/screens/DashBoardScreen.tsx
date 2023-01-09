@@ -217,11 +217,11 @@ export default function DashBoardScreen() {
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{marginBottom: 50}}>
       <View style={{padding: 15, justifyContent: 'center', alignItems: 'center', backgroundColor: '#0abfad', marginBottom: 10}}>
         <Text style={{color: "white", fontSize: 18, fontWeight: '900'}}>Welcome </Text>
       </View>
-      <ScrollView style={{backgroundColor: '#fff', flexGrow: 1}}>
+      <ScrollView style={{backgroundColor: '#fff', flexGrow: 1, marginBottom: 20}}>
 
         <View style={{paddingLeft: 15,paddingRight: 15, marginBottom: 20}}>
           <Text style={{fontSize: 18, fontWeight: '900', marginBottom: 10}}>
