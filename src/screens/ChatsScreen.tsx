@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { Auth, DataStore } from 'aws-amplify';
 import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
-import { ChatRoom, ChatRoomUser } from '../../src/models';
+import { ChatRoom, ChatRoomUser } from '../models';
 import ChatRoomItem from '../components/ChatRoomItem';
 
 
@@ -32,16 +32,19 @@ export default function ChatsScreen() {
         const userData = await Auth.currentAuthenticatedUser();
   
         const chatRooms = (await DataStore.query(ChatRoomUser))
-          .filter(chatRoomUser => chatRoomUser.user.id === userData.attributes.sub)
+          .filter(chatRoomUser => chatRoomUser.user?.id === userData.attributes.sub)
           .map(chatRoomUser => chatRoomUser.chatRoom);
+        console.log("chatRooms", chatRooms)
         setChatRooms(chatRooms);
 
       } catch (error) {
-        
+        console.log(error)
       }
     };
     fetchChatRooms();
   }, []);
+
+  // console.log("chatRooms", chatRooms)
 
   return (
     <View style={styles.page}>

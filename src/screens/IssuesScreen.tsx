@@ -259,7 +259,7 @@ const IssuesScreen = (props) => {
                       alignItems: 'flex-end',
                     }}>
                     <Pressable
-                      style={{flexDirection: 'row', alignItems: 'center'}}
+                      style={{flexDirection: 'row', alignItems: 'center', padding: 5}}
                       onPress={() => {
                         navigation.navigate('DetailTask', {taskId: task.id});
                       }}>

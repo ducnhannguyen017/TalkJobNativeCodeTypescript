@@ -47,7 +47,7 @@ export default function FriendsScreen() {
     });
     
     return () => subscription.unsubscribe();
-  }, [currentUser.friends.length]);
+  }, [currentUser?.friends.length]);
   
   useEffect(() => {
     // query users

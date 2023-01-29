@@ -231,9 +231,9 @@ function RootNavigator() {
         component={ChatRoomScreen}
         options={({route}: any) => ({
           headerTitle: () => <ChatRoomHeader id={route.params?.id} />,
-          headerLeft:()=>(
-              <HeaderBackButton onPress={()=>{navigation.navigate('Chats')}}  tintColor={'white'}/>
-          ),
+          // headerLeft:()=>(
+          //     <HeaderBackButton onPress={()=>{navigation.navigate('Chats')}}  tintColor={'white'}/>
+          // ),
           headerBackTitleVisible: false,
         })}
       />

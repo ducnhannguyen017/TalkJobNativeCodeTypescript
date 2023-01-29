@@ -9,7 +9,7 @@ import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Colors from '../constants/Colors';
 import DashBoardScreen from '../screens/DashBoardScreen';
-import ChatsScreen from '../screens/chats-screen';
+import ChatsScreen from '../screens/ChatsScreen';
 import FriendsScreen from '../screens/FriendsScreen';
 import ProjectsScreen from '../screens/ProjectsScreen';
 import IssuesScreen from '../screens/IssuesScreen';

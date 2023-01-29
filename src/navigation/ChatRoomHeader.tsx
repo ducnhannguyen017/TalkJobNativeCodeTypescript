@@ -96,7 +96,7 @@ const ChatRoomHeader = ({ id, children }:any) => {
       };
       pushNotificationsService.sendPushNotification(selectedOpponentsIds, pushParams);
     } catch (error) {
-      Alert.alert('Oops!', error.message)
+      // Alert.alert('Oops!', error.message)
     }
     navigation.push('VideoScreen', { });
   }

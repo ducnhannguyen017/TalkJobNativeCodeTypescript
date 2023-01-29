@@ -547,14 +547,16 @@ export default function DashBoardScreen() {
                                       )}
                                     </View>
                                     <View style={{paddingLeft: 10}}>
-                                      <Text
-                                        style={{
-                                          textDecorationLine: 'underline',
-                                          color: '#c9c6c6',
-                                          fontStyle: 'italic',
-                                        }}>
-                                        {code}
-                                      </Text>
+                                      <Pressable onPress={()=>navigation.navigate('DetailTask', {taskId:id})}>
+                                        <Text
+                                          style={{
+                                            textDecorationLine: 'underline',
+                                            color: '#c9c6c6',
+                                            fontStyle: 'italic',
+                                          }}>
+                                          {code}
+                                        </Text>
+                                      </Pressable>
                                     </View>
                                   </Text>
                                 </>

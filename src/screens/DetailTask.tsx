@@ -11,6 +11,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CustomButton from '../components/CustomButton';
+import { useSelector } from 'react-redux';
 
 const DetailTask = () => {
   const route = useRoute<any>();
@@ -19,6 +20,7 @@ const DetailTask = () => {
   const [assignee, setAssignee] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [processStep, setProcessStep] = useState(null);
+  const user = useSelector((store:any) => store.currentUser);
   let defaultProcessStep;
 
   useEffect(() => {
@@ -62,6 +64,11 @@ const DetailTask = () => {
     setIsLoading(false);
   };
 
+  useEffect(() => {
+    console.log("user, user", user)
+  }, [])
+  
+
   return (
     <View style={styles.container}>
       <View>
@@ -96,12 +103,14 @@ const DetailTask = () => {
           <View style={{flexDirection: 'row'}}>
             <View style={{flexDirection: 'column', justifyContent: 'center'}}>
               <Image source={{uri: assigner?.imageUri}} style={styles.image} />
-              <Ionicons
-                style={{marginLeft: 10, marginTop: 10}}
-                name="chatbox-ellipses"
-                size={20}
-                color="black"
-              />
+              {user.id != assigner?.id && (
+                <Ionicons
+                  style={{marginLeft: 10, marginTop: 10}}
+                  name="chatbox-ellipses"
+                  size={20}
+                  color="black"
+                />
+              )}
             </View>
             <View>
               <View style={{flexDirection: 'row'}}>
@@ -150,12 +159,14 @@ const DetailTask = () => {
           <View style={{flexDirection: 'row'}}>
             <View style={{flexDirection: 'column', justifyContent: 'center'}}>
               <Image source={{uri: assignee?.imageUri}} style={styles.image} />
-              <Ionicons
-                style={{marginLeft: 10, marginTop: 10}}
-                name="chatbox-ellipses"
-                size={20}
-                color="black"
-              />
+              {user.id != assignee?.id && (
+                <Ionicons
+                  style={{marginLeft: 10, marginTop: 10}}
+                  name="chatbox-ellipses"
+                  size={20}
+                  color="black"
+                />
+              )}
             </View>
             <View>
               <View style={{flexDirection: 'row'}}>

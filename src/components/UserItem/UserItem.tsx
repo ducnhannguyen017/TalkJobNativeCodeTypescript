@@ -28,17 +28,17 @@ export default function UserItem({ user, setSelectedUsers, selectedUser, newGrou
       const authUser = await Auth.currentAuthenticatedUser();
       
       //check exist chatroom
-      const lstChatRoomUser:any = groupBy((await DataStore.query(ChatRoomUser)).filter(chatRoom => chatRoom.user.id == authUser.attributes.sub || chatRoom.user.id == user.id));
+      const lstChatRoomUser:any = groupBy((await DataStore.query(ChatRoomUser)).filter(chatRoom => chatRoom.user?.id == authUser.attributes.sub || chatRoom.user?.id == user?.id));
       await Promise.all(
         Object.keys(lstChatRoomUser).map((chatRoomId) => findUsersInChatRoom(chatRoomId))
       );
       const createNewRoom:any = Object.values(roomMap).find((room:any)=>{
-        if(room.length == 2 && room.find(e=>e.user.id == user.id)) return true;
+        if(room.length == 2 && room.find(e=>e.user?.id == user?.id)) return true;
         else return false
       });
       //
       if(createNewRoom){
-        navigation.navigate('ChatRoom', { id: createNewRoom[0].chatRoom.id });
+        navigation.navigate('ChatRoom', { id: createNewRoom[0].chatRoom?.id });
         return;
       }else{
         // Create a chat room
